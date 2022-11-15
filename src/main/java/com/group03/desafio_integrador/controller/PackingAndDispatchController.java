@@ -2,15 +2,15 @@ package com.group03.desafio_integrador.controller;
 
 import com.group03.desafio_integrador.dto.DispatchDTO;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
+import com.group03.desafio_integrador.entities.DispatchPacking;
 import com.group03.desafio_integrador.service.PackingAndDispatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -25,7 +25,23 @@ public class PackingAndDispatchController {
     } //http://localhost:8080/api/v1/orders/packing
 
     @GetMapping("/dispatch")
-    public ResponseEntity<Set<DispatchDTO>> getCartProductsListDispatch() {
+    public ResponseEntity<Set<DispatchPacking>> getCartProductsListDispatch() {
         return new ResponseEntity<>(packingAndDispatchService.getAllPackingForDispatch(), HttpStatus.OK);
     } //http://localhost:8080/api/v1/orders/dispatch
+
+    @PostMapping("/dispatch/save")
+    public ResponseEntity<String> saveDispatch() {
+        packingAndDispatchService.saveData();
+        return new ResponseEntity<>("Deu certo #salvou!!", HttpStatus.OK);
+    } //http://localhost:8080/api/v1/orders/dispatch/save
+
+   // @PutMapping("/dispatch/{id}")
+    //public ResponseEntity<DispatchDTO> update(@PathVariable(value = "id") Long id) {
+    //    return new ResponseEntity<>(packingAndDispatchService.updateStatusDispatch(id), HttpStatus.OK);
+   // }
+
+   @PutMapping("/dispatch")
+   public ResponseEntity<DispatchPacking> update(@RequestBody DispatchPacking dispatch) {
+       return new ResponseEntity<>(packingAndDispatchService.updateStatusDispatch(dispatch), HttpStatus.OK);
+    }
 }

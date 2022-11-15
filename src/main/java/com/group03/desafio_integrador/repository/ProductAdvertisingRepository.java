@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface ProductAdvertisingRepository extends JpaRepository<ProductAdvertising, Long> {
     List<ProductAdvertising> findAllByCategory(CategoryEnum categoryEnum);
+
+    interface IDispatchPackingService {
+    }
 }
