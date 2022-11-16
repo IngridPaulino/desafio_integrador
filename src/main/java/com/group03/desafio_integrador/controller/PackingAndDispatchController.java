@@ -31,8 +31,9 @@ public class PackingAndDispatchController {
     } //http://localhost:8080/api/v1/orders/packing2
 
     @GetMapping("/dispatch")
-    public ResponseEntity<List<DispatchDTO>> getCartProductsListDispatch() {
-        return new ResponseEntity<>(packingAndDispatchService.getAllPackingForDispatch(), HttpStatus.OK);
+    public ResponseEntity<String> getCartProductsListDispatch() {
+        packingAndDispatchService.getAllPackingForDispatch();
+        return new ResponseEntity<>("Salvo com sucesso !!!!!", HttpStatus.OK);
     } //http://localhost:8080/api/v1/orders/dispatch
 
     @PostMapping("/dispatch/save")

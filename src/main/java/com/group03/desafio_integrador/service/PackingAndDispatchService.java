@@ -4,12 +4,14 @@ import com.group03.desafio_integrador.advisor.exceptions.NotFoundException;
 import com.group03.desafio_integrador.dto.DispatchDTO;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
 import com.group03.desafio_integrador.entities.CartProduct;
+import com.group03.desafio_integrador.entities.Dispatch;
 import com.group03.desafio_integrador.entities.DispatchPacking;
 import com.group03.desafio_integrador.entities.entities_enum.CategoryEnum;
 import com.group03.desafio_integrador.entities.entities_enum.DispatchStatusEnum;
 import com.group03.desafio_integrador.entities.entities_enum.OrderStatusEnum;
 import com.group03.desafio_integrador.repository.CartProductRepository;
 import com.group03.desafio_integrador.repository.DispatchPackingRepository;
+import com.group03.desafio_integrador.repository.DispatchRepository;
 import com.group03.desafio_integrador.service.interfaces.IPackingAndDispatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     private CartProductRepository repository;
     @Autowired
     private DispatchPackingRepository dispatchPackingRepository;
+    @Autowired
+    private DispatchRepository dispatchRepository;
 
     /**
      * @return
@@ -65,35 +69,19 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         return dispatchDTOList;
     }
 
-    //@Override
-    //public List<DispatchDTO> getAllPackingForDispatch() {
-        //List<DispatchDTO> s = packingsfinal();
+    @Override
+    public void getAllPackingForDispatch() {
+        List<DispatchDTO> s = packingsfinal();
+        s.forEach(obj -> {
+            Dispatch e = Dispatch.builder()
+                    .buyer_id(obj.getBuyer_id())
+                    .category(obj.getCategory())
+                    .status(DispatchStatusEnum.ABERTO)
+                    .build();
 
-
-
-
-
-
-
-        //List<DispatchPacking> cartProductOrderFinished = dispatchPackingRepository.findAll();
-        //Set<DispatchDTO> set = new LinkedHashSet<>();
-        // List<DispatchDTO> newList = new ArrayList<>();
-        // List<DispatchDTO> newList2 = new ArrayList<>();
-
-
-        // cartProductOrderFinished.forEach(a -> {
-        //DispatchDTO s = DispatchDTO.builder()
-        //        .buyer_id(BigInteger.valueOf(Long.valueOf(a.getBuyer_id())))
-        //          .category(a.getCategory().ordinal())
-        //         .build();
-        //  newList.add(s);
-        //});
-
-
-
-
-        //  return newList2;
-    //}
+            dispatchRepository.save(e);
+        });
+    }
 
     @Override
     public void saveData() {
@@ -139,25 +127,25 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     /**
      * @return
      */
-    @Override
-    public List<DispatchDTO> getAllPackingForDispatch() {
-        //List<DispatchPacking> cartProductOrderFinished = dispatchPackingRepository.findAll();
+    //@Override
+   // public List<DispatchDTO> getAllPackingForDispatch() {
+      //  List<DispatchPacking> cartProductOrderFinished = dispatchPackingRepository.findAll();
         //Set<DispatchDTO> set = new LinkedHashSet<>();
-       // List<DispatchDTO> newList = new ArrayList<>();
+      //  List<DispatchDTO> newList = new ArrayList<>();
        // List<DispatchDTO> newList2 = new ArrayList<>();
 
 
-       // cartProductOrderFinished.forEach(a -> {
-            //DispatchDTO s = DispatchDTO.builder()
-            //        .buyer_id(BigInteger.valueOf(Long.valueOf(a.getBuyer_id())))
-          //          .category(a.getCategory().ordinal())
-           //         .build();
-          //  newList.add(s);
-        //});
+        //cartProductOrderFinished.forEach(a -> {
+        //    DispatchDTO s = DispatchDTO.builder()
+         //           .buyer_id(BigInteger.valueOf(Long.valueOf(a.getBuyer_id())))
+         //           .category(a.getCategory().ordinal())
+          //          .build();
+         //  newList.add(s);
+       // });
 
 
 
 
-      //  return newList2;
-    }
+    //    return newList2;
+    //}
 }

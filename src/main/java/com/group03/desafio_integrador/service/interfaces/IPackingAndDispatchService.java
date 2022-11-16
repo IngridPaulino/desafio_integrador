@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface IPackingAndDispatchService {
     List<PackingOrderDTO> getAllCartProductFinished();
-    List<DispatchDTO> getAllPackingForDispatch();
+    void getAllPackingForDispatch();
     void saveData();
     DispatchPacking updateStatusDispatch(DispatchPacking dispatchPacking);
     List<DispatchDTO> packingsfinal();
