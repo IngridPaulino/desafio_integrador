@@ -5,6 +5,7 @@ import com.group03.desafio_integrador.dto.DispatchDTO;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
 import com.group03.desafio_integrador.entities.CartProduct;
 import com.group03.desafio_integrador.entities.DispatchPacking;
+import com.group03.desafio_integrador.entities.entities_enum.CategoryEnum;
 import com.group03.desafio_integrador.entities.entities_enum.DispatchStatusEnum;
 import com.group03.desafio_integrador.entities.entities_enum.OrderStatusEnum;
 import com.group03.desafio_integrador.repository.CartProductRepository;
@@ -13,6 +14,7 @@ import com.group03.desafio_integrador.service.interfaces.IPackingAndDispatchServ
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,12 +22,8 @@ import java.util.stream.Collectors;
 public class PackingAndDispatchService implements IPackingAndDispatchService {
     @Autowired
     private CartProductRepository repository;
-
     @Autowired
     private DispatchPackingRepository dispatchPackingRepository;
-
-    private List<CartProduct> cartBuyerOfProducts;
-
 
     /**
      * @return
@@ -33,7 +31,7 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     @Override
     public List<PackingOrderDTO> getAllCartProductFinished() {
         List<PackingOrderDTO> ordersFinishidDTOS = new ArrayList<>();
-        cartBuyerOfProducts = repository.findAll();
+        List<CartProduct> cartBuyerOfProducts = repository.findAll();
 
         return cartBuyerOfProducts.stream().map(p -> {
             if (p.getShoppingCart().getOrderStatus().equals(OrderStatusEnum.FINALIZADO)) {
@@ -51,10 +49,51 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         }).collect(Collectors.toList()).get(0);
     }
 
-    private Integer createId() {
-        Integer id = 0;
-        return id += 1;
+    @Override
+    public List<DispatchDTO> packingsfinal() {
+        List<DispatchDTO> dispatchDTOList = new ArrayList<>();
+        List<Object[]> dispatch = dispatchPackingRepository.packingByDispatch();
+        for(Object[] element : dispatch) {
+            DispatchDTO a = DispatchDTO.builder()
+                    .buyer_id((BigInteger) element[0])
+                    .category((Integer) element[1])
+                    .build();
+
+            dispatchDTOList.add(a);
+        }
+
+        return dispatchDTOList;
     }
+
+    //@Override
+    //public List<DispatchDTO> getAllPackingForDispatch() {
+        //List<DispatchDTO> s = packingsfinal();
+
+
+
+
+
+
+
+        //List<DispatchPacking> cartProductOrderFinished = dispatchPackingRepository.findAll();
+        //Set<DispatchDTO> set = new LinkedHashSet<>();
+        // List<DispatchDTO> newList = new ArrayList<>();
+        // List<DispatchDTO> newList2 = new ArrayList<>();
+
+
+        // cartProductOrderFinished.forEach(a -> {
+        //DispatchDTO s = DispatchDTO.builder()
+        //        .buyer_id(BigInteger.valueOf(Long.valueOf(a.getBuyer_id())))
+        //          .category(a.getCategory().ordinal())
+        //         .build();
+        //  newList.add(s);
+        //});
+
+
+
+
+        //  return newList2;
+    //}
 
     @Override
     public void saveData() {
@@ -66,7 +105,6 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
                     .category(packing.getType())
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
-
 
             dispatchPackingRepository.save(savePackingInBanco);
         });
@@ -81,61 +119,45 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     public DispatchPacking updateStatusDispatch(DispatchPacking dispatchPacking) {
         Optional<DispatchPacking> packingExist = Optional.ofNullable(dispatchPackingRepository.findById(dispatchPacking.getId_Packing())
                 .orElseThrow(() -> new NotFoundException("Id not found! ")));
-        return dispatchPackingRepository.save(dispatchPacking);
+        DispatchPacking updated = dispatchPackingRepository.save(dispatchPacking);
+       // if(updated.getStatus() == DispatchStatusEnum.ENTREGUE) {
+
+        //}
+        return updated;
     }
+
+    /**
+     * @return
+     */
+    //@Override
+    //public List<DispatchPacking> deleteAllBuyersDeliver() {
+      //  List<PackingOrderDTO> cartProductOrderFinished = getAllCartProductFinished();
+     //   dispatchPackingRepository.deleteAll(obj);
+    //}
 
 
     /**
      * @return
      */
     @Override
-    public Set<DispatchPacking> getAllPackingForDispatch() {
-        List<DispatchPacking> cartProductOrderFinished = dispatchPackingRepository.findAll();
-        Set<DispatchPacking> data = new LinkedHashSet<>();
+    public List<DispatchDTO> getAllPackingForDispatch() {
+        //List<DispatchPacking> cartProductOrderFinished = dispatchPackingRepository.findAll();
+        //Set<DispatchDTO> set = new LinkedHashSet<>();
+       // List<DispatchDTO> newList = new ArrayList<>();
+       // List<DispatchDTO> newList2 = new ArrayList<>();
 
 
-        cartProductOrderFinished.forEach(f -> {
-            data.add(f); //isso nn funciona
-        });
-        return data;
-//
+       // cartProductOrderFinished.forEach(a -> {
+            //DispatchDTO s = DispatchDTO.builder()
+            //        .buyer_id(BigInteger.valueOf(Long.valueOf(a.getBuyer_id())))
+          //          .category(a.getCategory().ordinal())
+           //         .build();
+          //  newList.add(s);
+        //});
 
-//        List<PackingOrderDTO> cartProductOrderFinished = getAllCartProductFinished();
-//        HashSet<DispatchDTO> data = new LinkedHashSet<>();
-//
-//        cartProductOrderFinished.stream().map(f -> {
-//            DispatchDTO dispatchDTO = DispatchDTO.builder()
-//                    .id_Packing(Long.valueOf(createId()))
-//                    .buyer_id(f.getBuyer_id())
-//                    .category(f.getType())
-//                    .status(DispatchStatusEnum.ABERTO)
-//                    .build();
-//
-//            data.add(dispatchDTO );
-//
-//            return dispatchDTO ;
-//        }).collect(Collectors.toList());
-//
-//        return data;
+
+
+
+      //  return newList2;
     }
-
-    /**
-     * @param id
-     * @return
-     */
-    //@Override
-    //public DispatchDTO updateStatusDispatch(DispatchDTO dispatch) {
-     //   Set<DispatchDTO> packingsForDispatch = getAllPackingForDispatch();
-
-     //   List<DispatchDTO> packingOpen = packingsForDispatch.stream()
-      //          .filter(packing -> packing.getId_Packing() == dispatch.getId_Packing()).collect(Collectors.toList());
-
-      // if (packingOpen.isEmpty())
-       //     throw new NotFoundException("Packing Not Found");
-
-
-       // packingOpen.get(0).setStatus(DispatchStatusEnum.FECHADO);
-
-       // return packingOpen.get(0);
-   // }
 }

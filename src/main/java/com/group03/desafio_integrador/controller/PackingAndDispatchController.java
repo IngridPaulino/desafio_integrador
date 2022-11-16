@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -24,8 +25,13 @@ public class PackingAndDispatchController {
         return new ResponseEntity<>(packingAndDispatchService.getAllCartProductFinished(), HttpStatus.OK);
     } //http://localhost:8080/api/v1/orders/packing
 
+    @GetMapping("/packing2")
+    public ResponseEntity<List<DispatchDTO>> getAllPackingFinished() {
+        return new ResponseEntity<>(packingAndDispatchService.packingsfinal(), HttpStatus.OK);
+    } //http://localhost:8080/api/v1/orders/packing2
+
     @GetMapping("/dispatch")
-    public ResponseEntity<Set<DispatchPacking>> getCartProductsListDispatch() {
+    public ResponseEntity<List<DispatchDTO>> getCartProductsListDispatch() {
         return new ResponseEntity<>(packingAndDispatchService.getAllPackingForDispatch(), HttpStatus.OK);
     } //http://localhost:8080/api/v1/orders/dispatch
 
