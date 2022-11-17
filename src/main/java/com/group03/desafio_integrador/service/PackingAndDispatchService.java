@@ -17,92 +17,126 @@ import java.util.stream.Collectors;
 @Service
 public class PackingAndDispatchService implements IPackingAndDispatchService {
     @Autowired
-    private CartProductRepository repository;
+    private CartProductRepository cartProductRepository;
     @Autowired
-    private DispatchPackingRepository dispatchPackingRepository;
+    private DispatchPackingRepository packingRepository;
     @Autowired
     private DispatchRepository dispatchRepository;
 
     /**
-     * @return
+     * Método responsável por retornar todas as compras com status de finalizado
+     *
+     * @return Retorna uma lista do tipo PackingOrderDTO
+     * @author Ingrid Paulino
      */
     @Override
-    public List<PackingOrderDTO> getAllCartProductFinished() {
-        List<PackingOrderDTO> ordersFinishidDTOS = new ArrayList<>();
-        List<CartProduct> cartBuyerOfProducts = repository.findAll();
+    public List<PackingOrderDTO> getAllFinishedPurchases() {
+        List<PackingOrderDTO> packingOrderFinishidDTOS = new ArrayList<>();
+        List<CartProduct> cartBuyerOfProducts = cartProductRepository.findAll();
 
-        return cartBuyerOfProducts.stream().map(p -> {
-            if (p.getShoppingCart().getOrderStatus().equals(OrderStatusEnum.FINALIZADO)) {
+        return cartBuyerOfProducts.stream().map(cartProduct -> {
+            Buyer buyer = Buyer.builder()
+                    .buyerId(cartProduct.getShoppingCart().getBuyer().getBuyerId())
+                    .buyerName(cartProduct.getShoppingCart().getBuyer().getBuyerName())
+                    .build();
+            if (cartProduct.getShoppingCart().getOrderStatus().equals(OrderStatusEnum.FINALIZADO)) {
                 PackingOrderDTO packing = PackingOrderDTO.builder()
-                        .cart_product_id(p.getCartProductId())
-                        .product_id(p.getCartProductId())
-                        .order_status(String.valueOf(p.getShoppingCart().getOrderStatus()))
-                        .buyer_id(p.getShoppingCart().getBuyer().getBuyerId())
-                        .type(p.getProductAdvertising().getCategory())
+                        .cart_product_id(cartProduct.getCartProductId())
+                        .product_id(cartProduct.getCartProductId())
+                        .seller(cartProduct.getProductAdvertising().getSeller().getSellerId())
+                        .buyer(buyer)
+                        .category(cartProduct.getProductAdvertising().getCategory())
+                        .order_status(String.valueOf(cartProduct.getShoppingCart().getOrderStatus()))
                         .build();
 
-                ordersFinishidDTOS.add(packing);
+                packingOrderFinishidDTOS.add(packing);
             }
-            return ordersFinishidDTOS;
+            return packingOrderFinishidDTOS;
         }).collect(Collectors.toList()).get(0);
     }
 
     /**
-     * @return
+     * Método responsável por salvar todas as compras finalizadas na tabela de embalagem
+     *
+     * @return Retorna uma lista do tipo PackingOrderDTO
+     * @author Ingrid Paulino
+     */
+    @Override
+    public List<DispatchPacking> saveFinishedPurchases() {
+        List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
+
+        return cartProductOrderFinished.stream().map(packing -> {
+            DispatchPacking savePackingInBanco = DispatchPacking.builder()
+                    .buyer_id(packing.getBuyer().getBuyerId())
+                    .buyer_Name(packing.getBuyer().getBuyerName())
+                    .category(packing.getCategory())
+                    .status(DispatchStatusEnum.ABERTO)
+                    .build();
+
+            return packingRepository.save(savePackingInBanco);
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * Método responsável por empacotar os produtos do mesmo comprador e categoria
+     *
+     * @return Retorna uma lista com a categoria e comprador
+     * @author Ingrid Paulino
+     */
+    @Override
+    public List<DispatchDTO> packagedProductsFromSameBuyerAndCategory() {
+        List<DispatchDTO> dispatchDTOList = new ArrayList<>();
+        List<Object[]> dispatch = packingRepository.packingByDispatch();
+        for(Object[] element : dispatch) {
+            DispatchDTO a = DispatchDTO.builder()
+                    .buyer_id((BigInteger) element[0])
+                    .category((Integer) element[1])
+                   .build();
+
+            dispatchDTOList.add(a);
+        }
+        return dispatchDTOList;
+    }
+
+    /**
+     * Método responsável por separar emcomendas prontas para despacho
+     *
+     * @return Não retorna nada
+     * @author Ingrid Paulino
+     */
+    @Override
+    public void productsForDispatch() {
+        List<DispatchDTO> s = packagedProductsFromSameBuyerAndCategory();
+        s.forEach(obj -> {
+            Dispatch packing = Dispatch.builder()
+                    .buyer_id(obj.getBuyer_id())
+                    //.buyer_Name(obj.)
+                    .category(obj.getCategory())
+                    .status(DispatchStatusEnum.ABERTO)
+                    .build();
+
+            dispatchRepository.save(packing);
+        });
+    }
+
+
+    /**
+     * Método responsável por retornar todos os pacotes que precisa ser entregues
+     *
+     * @return retorna uma lista de Dispatch
+     * @author Ingrid Paulino
      */
     @Override
     public List<Dispatch> getAllPackingForDispatch() {
         return dispatchRepository.findAll();
     }
 
-    @Override
-    public void saveData() {
-        List<PackingOrderDTO> cartProductOrderFinished = getAllCartProductFinished();
-
-        cartProductOrderFinished.forEach(packing -> {
-            DispatchPacking savePackingInBanco = DispatchPacking.builder()
-                    .buyer_id(packing.getBuyer_id())
-                    .category(packing.getType())
-                    .status(DispatchStatusEnum.ABERTO)
-                    .build();
-
-            dispatchPackingRepository.save(savePackingInBanco);
-        });
-    }
-
-    @Override
-    public List<DispatchDTO> packingsfinal() {
-        List<DispatchDTO> dispatchDTOList = new ArrayList<>();
-        List<Object[]> dispatch = dispatchPackingRepository.packingByDispatch();
-        for(Object[] element : dispatch) {
-            DispatchDTO a = DispatchDTO.builder()
-                    .buyer_id((BigInteger) element[0])
-                    .category((Integer) element[1])
-                    .build();
-
-            dispatchDTOList.add(a);
-        }
-
-        return dispatchDTOList;
-    }
-
-    @Override
-    public void PackingProductsForDispatch() {
-        List<DispatchDTO> s = packingsfinal();
-        s.forEach(obj -> {
-            Dispatch e = Dispatch.builder()
-                    .buyer_id(obj.getBuyer_id())
-                    .category(obj.getCategory())
-                    .status(DispatchStatusEnum.ABERTO)
-                    .build();
-
-            dispatchRepository.save(e);
-        });
-    }
-
     /**
+     * Método responsável por atualizar status de entrega em ABERTO ou ENTREGUE e mandar a notificação
+     * da entrega entrege para o comrador e vendedor
+     *
      * @param dispatchPacking
-     * @return
+     * @return Retorna o objeto do pacote entregue
      */
     // TODO: 15/11/22 mudar a rota para path
     @Override

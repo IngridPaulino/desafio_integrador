@@ -8,11 +8,11 @@ import com.group03.desafio_integrador.entities.DispatchPacking;
 import java.util.List;
 
 public interface IPackingAndDispatchService {
-    List<PackingOrderDTO> getAllCartProductFinished();
+    List<PackingOrderDTO> getAllFinishedPurchases();
     List<Dispatch> getAllPackingForDispatch();
-    void PackingProductsForDispatch();
-    void saveData();
+    void productsForDispatch();
+    List<DispatchPacking> saveFinishedPurchases();
     Dispatch updateStatusDispatch(Dispatch dispatchPacking);
-    List<DispatchDTO> packingsfinal();
+    List<DispatchDTO> packagedProductsFromSameBuyerAndCategory();
 
 }

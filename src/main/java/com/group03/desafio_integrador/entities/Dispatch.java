@@ -26,6 +26,9 @@ public class Dispatch {
     private BigInteger buyer_id;
 
     @NotNull
+    private String buyer_Name;
+
+    @NotNull
     private Integer category;
 
     @NotNull

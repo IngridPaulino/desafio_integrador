@@ -19,28 +19,21 @@ public class PackingAndDispatchController {
     public PackingAndDispatchService packingAndDispatchService;
 
     @GetMapping("/packing")
-    public ResponseEntity<List<PackingOrderDTO>> getAllCartProductFinished() {
-        return new ResponseEntity<>(packingAndDispatchService.getAllCartProductFinished(), HttpStatus.OK);
+    public ResponseEntity<List<PackingOrderDTO>> getAllFinishedPurchases() {
+        return new ResponseEntity<>(packingAndDispatchService.getAllFinishedPurchases(), HttpStatus.OK);
     } //http://localhost:8080/api/v1/orders/packing
 
+    @PostMapping("/save-finished-purchases")
+    public ResponseEntity<List<DispatchPacking>> saveFinishedPurchases() {
+        return new ResponseEntity<>(packingAndDispatchService.saveFinishedPurchases(), HttpStatus.OK);
+    } // TODO: 17/11/22 produtos salva toda vez que faço a requisição
 
 
-    @GetMapping("/packingForDispatch")
+
+    @GetMapping("/packing-for-dispatch")
     public ResponseEntity<List<Dispatch>> getAllPackingForDispatch() {
         return new ResponseEntity<>(packingAndDispatchService.getAllPackingForDispatch(), HttpStatus.OK);
-    } //http://localhost:8080/api/v1/orders/packingForDispatch
-
-    @GetMapping("/dispatch")
-    public ResponseEntity<String> getCartProductsListDispatch() {
-        packingAndDispatchService.getAllPackingForDispatch();
-        return new ResponseEntity<>("Salvo com sucesso !!!!!", HttpStatus.OK);
-    } //http://localhost:8080/api/v1/orders/dispatch
-
-    @PostMapping("/dispatch/save")
-    public ResponseEntity<String> saveDispatch() {
-        packingAndDispatchService.saveData();
-        return new ResponseEntity<>("Deu certo #salvou!!", HttpStatus.OK);
-    } //http://localhost:8080/api/v1/orders/dispatch/save
+    }
 
    @PutMapping("/dispatch")
    public ResponseEntity<Dispatch> update(@RequestBody Dispatch dispatch) {
