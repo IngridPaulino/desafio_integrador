@@ -2,6 +2,7 @@ package com.group03.desafio_integrador.controller;
 
 import com.group03.desafio_integrador.dto.DispatchDTO;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
+import com.group03.desafio_integrador.entities.Dispatch;
 import com.group03.desafio_integrador.entities.DispatchPacking;
 import com.group03.desafio_integrador.service.PackingAndDispatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -25,10 +23,12 @@ public class PackingAndDispatchController {
         return new ResponseEntity<>(packingAndDispatchService.getAllCartProductFinished(), HttpStatus.OK);
     } //http://localhost:8080/api/v1/orders/packing
 
-    @GetMapping("/packing2")
-    public ResponseEntity<List<DispatchDTO>> getAllPackingFinished() {
-        return new ResponseEntity<>(packingAndDispatchService.packingsfinal(), HttpStatus.OK);
-    } //http://localhost:8080/api/v1/orders/packing2
+
+
+    @GetMapping("/packingForDispatch")
+    public ResponseEntity<List<Dispatch>> getAllPackingForDispatch() {
+        return new ResponseEntity<>(packingAndDispatchService.getAllPackingForDispatch(), HttpStatus.OK);
+    } //http://localhost:8080/api/v1/orders/packingForDispatch
 
     @GetMapping("/dispatch")
     public ResponseEntity<String> getCartProductsListDispatch() {
@@ -42,13 +42,8 @@ public class PackingAndDispatchController {
         return new ResponseEntity<>("Deu certo #salvou!!", HttpStatus.OK);
     } //http://localhost:8080/api/v1/orders/dispatch/save
 
-   // @PutMapping("/dispatch/{id}")
-    //public ResponseEntity<DispatchDTO> update(@PathVariable(value = "id") Long id) {
-    //    return new ResponseEntity<>(packingAndDispatchService.updateStatusDispatch(id), HttpStatus.OK);
-   // }
-
    @PutMapping("/dispatch")
-   public ResponseEntity<DispatchPacking> update(@RequestBody DispatchPacking dispatch) {
+   public ResponseEntity<Dispatch> update(@RequestBody Dispatch dispatch) {
        return new ResponseEntity<>(packingAndDispatchService.updateStatusDispatch(dispatch), HttpStatus.OK);
     }
 }

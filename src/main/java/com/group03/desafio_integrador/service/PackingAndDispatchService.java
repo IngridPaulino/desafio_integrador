@@ -1,18 +1,12 @@
 package com.group03.desafio_integrador.service;
 
 import com.group03.desafio_integrador.advisor.exceptions.NotFoundException;
-import com.group03.desafio_integrador.dto.DispatchDTO;
-import com.group03.desafio_integrador.dto.PackingOrderDTO;
-import com.group03.desafio_integrador.entities.CartProduct;
-import com.group03.desafio_integrador.entities.Dispatch;
-import com.group03.desafio_integrador.entities.DispatchPacking;
-import com.group03.desafio_integrador.entities.entities_enum.CategoryEnum;
-import com.group03.desafio_integrador.entities.entities_enum.DispatchStatusEnum;
-import com.group03.desafio_integrador.entities.entities_enum.OrderStatusEnum;
-import com.group03.desafio_integrador.repository.CartProductRepository;
-import com.group03.desafio_integrador.repository.DispatchPackingRepository;
-import com.group03.desafio_integrador.repository.DispatchRepository;
+import com.group03.desafio_integrador.dto.*;
+import com.group03.desafio_integrador.entities.*;
+import com.group03.desafio_integrador.entities.entities_enum.*;
+import com.group03.desafio_integrador.repository.*;
 import com.group03.desafio_integrador.service.interfaces.IPackingAndDispatchService;
+import com.group03.desafio_integrador.utils.JavaMailApp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,34 +47,12 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         }).collect(Collectors.toList()).get(0);
     }
 
+    /**
+     * @return
+     */
     @Override
-    public List<DispatchDTO> packingsfinal() {
-        List<DispatchDTO> dispatchDTOList = new ArrayList<>();
-        List<Object[]> dispatch = dispatchPackingRepository.packingByDispatch();
-        for(Object[] element : dispatch) {
-            DispatchDTO a = DispatchDTO.builder()
-                    .buyer_id((BigInteger) element[0])
-                    .category((Integer) element[1])
-                    .build();
-
-            dispatchDTOList.add(a);
-        }
-
-        return dispatchDTOList;
-    }
-
-    @Override
-    public void getAllPackingForDispatch() {
-        List<DispatchDTO> s = packingsfinal();
-        s.forEach(obj -> {
-            Dispatch e = Dispatch.builder()
-                    .buyer_id(obj.getBuyer_id())
-                    .category(obj.getCategory())
-                    .status(DispatchStatusEnum.ABERTO)
-                    .build();
-
-            dispatchRepository.save(e);
-        });
+    public List<Dispatch> getAllPackingForDispatch() {
+        return dispatchRepository.findAll();
     }
 
     @Override
@@ -98,54 +70,49 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         });
     }
 
+    @Override
+    public List<DispatchDTO> packingsfinal() {
+        List<DispatchDTO> dispatchDTOList = new ArrayList<>();
+        List<Object[]> dispatch = dispatchPackingRepository.packingByDispatch();
+        for(Object[] element : dispatch) {
+            DispatchDTO a = DispatchDTO.builder()
+                    .buyer_id((BigInteger) element[0])
+                    .category((Integer) element[1])
+                    .build();
+
+            dispatchDTOList.add(a);
+        }
+
+        return dispatchDTOList;
+    }
+
+    @Override
+    public void PackingProductsForDispatch() {
+        List<DispatchDTO> s = packingsfinal();
+        s.forEach(obj -> {
+            Dispatch e = Dispatch.builder()
+                    .buyer_id(obj.getBuyer_id())
+                    .category(obj.getCategory())
+                    .status(DispatchStatusEnum.ABERTO)
+                    .build();
+
+            dispatchRepository.save(e);
+        });
+    }
+
     /**
      * @param dispatchPacking
      * @return
      */
     // TODO: 15/11/22 mudar a rota para path
     @Override
-    public DispatchPacking updateStatusDispatch(DispatchPacking dispatchPacking) {
-        Optional<DispatchPacking> packingExist = Optional.ofNullable(dispatchPackingRepository.findById(dispatchPacking.getId_Packing())
+    public Dispatch updateStatusDispatch(Dispatch dispatchPacking) {
+        Optional<Dispatch> packingExist = Optional.ofNullable(dispatchRepository.findById(dispatchPacking.getId_Packing())
                 .orElseThrow(() -> new NotFoundException("Id not found! ")));
-        DispatchPacking updated = dispatchPackingRepository.save(dispatchPacking);
-       // if(updated.getStatus() == DispatchStatusEnum.ENTREGUE) {
-
-        //}
+        Dispatch updated = dispatchRepository.save(dispatchPacking);
+       if(updated.getStatus() == DispatchStatusEnum.ENTREGUE) {
+           JavaMailApp.sendMail();
+        }
         return updated;
     }
-
-    /**
-     * @return
-     */
-    //@Override
-    //public List<DispatchPacking> deleteAllBuyersDeliver() {
-      //  List<PackingOrderDTO> cartProductOrderFinished = getAllCartProductFinished();
-     //   dispatchPackingRepository.deleteAll(obj);
-    //}
-
-
-    /**
-     * @return
-     */
-    //@Override
-   // public List<DispatchDTO> getAllPackingForDispatch() {
-      //  List<DispatchPacking> cartProductOrderFinished = dispatchPackingRepository.findAll();
-        //Set<DispatchDTO> set = new LinkedHashSet<>();
-      //  List<DispatchDTO> newList = new ArrayList<>();
-       // List<DispatchDTO> newList2 = new ArrayList<>();
-
-
-        //cartProductOrderFinished.forEach(a -> {
-        //    DispatchDTO s = DispatchDTO.builder()
-         //           .buyer_id(BigInteger.valueOf(Long.valueOf(a.getBuyer_id())))
-         //           .category(a.getCategory().ordinal())
-          //          .build();
-         //  newList.add(s);
-       // });
-
-
-
-
-    //    return newList2;
-    //}
 }
