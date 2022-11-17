@@ -23,13 +23,13 @@ public class Dispatch {
     private Long id_Packing;
 
     @NotNull
-    private BigInteger buyer_id;
+    private Long buyer_id;
 
     @NotNull
     private String buyer_Name;
 
     @NotNull
-    private Integer category;
+    private CategoryEnum category;
 
     @NotNull
     private DispatchStatusEnum status;

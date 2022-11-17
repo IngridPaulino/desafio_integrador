@@ -21,14 +21,18 @@ public class PackingAndDispatchController {
     @GetMapping("/packing")
     public ResponseEntity<List<PackingOrderDTO>> getAllFinishedPurchases() {
         return new ResponseEntity<>(packingAndDispatchService.getAllFinishedPurchases(), HttpStatus.OK);
-    } //http://localhost:8080/api/v1/orders/packing
+    }
 
     @PostMapping("/save-finished-purchases")
     public ResponseEntity<List<DispatchPacking>> saveFinishedPurchases() {
-        return new ResponseEntity<>(packingAndDispatchService.saveFinishedPurchases(), HttpStatus.OK);
+        return new ResponseEntity<>(packingAndDispatchService.saveFinishedPurchases(), HttpStatus.CREATED);
     } // TODO: 17/11/22 produtos salva toda vez que faço a requisição
 
-
+    @PostMapping("/pack-products") //Embala pacotes
+    public ResponseEntity<String> packProducts() {
+        packingAndDispatchService.packagedProductsFromSameBuyerAndCategory();
+        return new ResponseEntity<>("Produtos embalados!!!", HttpStatus.CREATED);
+    }
 
     @GetMapping("/packing-for-dispatch")
     public ResponseEntity<List<Dispatch>> getAllPackingForDispatch() {

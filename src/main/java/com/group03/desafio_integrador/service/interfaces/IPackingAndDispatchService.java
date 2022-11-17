@@ -10,9 +10,8 @@ import java.util.List;
 public interface IPackingAndDispatchService {
     List<PackingOrderDTO> getAllFinishedPurchases();
     List<Dispatch> getAllPackingForDispatch();
-    void productsForDispatch();
     List<DispatchPacking> saveFinishedPurchases();
     Dispatch updateStatusDispatch(Dispatch dispatchPacking);
-    List<DispatchDTO> packagedProductsFromSameBuyerAndCategory();
+    void packagedProductsFromSameBuyerAndCategory();
 
 }

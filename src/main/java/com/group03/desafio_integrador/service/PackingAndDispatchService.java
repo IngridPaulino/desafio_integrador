@@ -78,47 +78,27 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     }
 
     /**
-     * Método responsável por empacotar os produtos do mesmo comprador e categoria
+     * Método responsável por empacotar os produtos do mesmo comprador e categoria. E salvar esses dados
+     * na tabela de despacho
      *
-     * @return Retorna uma lista com a categoria e comprador
+     * @return Não tem retorno
      * @author Ingrid Paulino
      */
-    @Override
-    public List<DispatchDTO> packagedProductsFromSameBuyerAndCategory() {
-        List<DispatchDTO> dispatchDTOList = new ArrayList<>();
-        List<Object[]> dispatch = packingRepository.packingByDispatch();
-        for(Object[] element : dispatch) {
-            DispatchDTO a = DispatchDTO.builder()
-                    .buyer_id((BigInteger) element[0])
-                    .category((Integer) element[1])
-                   .build();
 
-            dispatchDTOList.add(a);
-        }
-        return dispatchDTOList;
-    }
-
-    /**
-     * Método responsável por separar emcomendas prontas para despacho
-     *
-     * @return Não retorna nada
-     * @author Ingrid Paulino
-     */
     @Override
-    public void productsForDispatch() {
-        List<DispatchDTO> s = packagedProductsFromSameBuyerAndCategory();
-        s.forEach(obj -> {
-            Dispatch packing = Dispatch.builder()
-                    .buyer_id(obj.getBuyer_id())
-                    //.buyer_Name(obj.)
-                    .category(obj.getCategory())
+    public void packagedProductsFromSameBuyerAndCategory() {
+        List<PackingOrderDTO> dispatch = packingRepository.packingByDispatch();
+        for(PackingOrderDTO element : dispatch) {
+            Dispatch savePacking = Dispatch.builder()
+                    .buyer_id(element.getBuyer().getBuyerId())
+                    .buyer_Name(element.getBuyer().getBuyerName())
+                    .category(element.getCategory())
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
 
-            dispatchRepository.save(packing);
-        });
+            dispatchRepository.save(savePacking);
+        }
     }
-
 
     /**
      * Método responsável por retornar todos os pacotes que precisa ser entregues
