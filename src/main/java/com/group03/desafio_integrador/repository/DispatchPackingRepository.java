@@ -1,6 +1,5 @@
 package com.group03.desafio_integrador.repository;
 
-import com.group03.desafio_integrador.dto.DispatchDTO;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
 import com.group03.desafio_integrador.entities.DispatchPacking;
 import org.springframework.data.jpa.repository.JpaRepository;

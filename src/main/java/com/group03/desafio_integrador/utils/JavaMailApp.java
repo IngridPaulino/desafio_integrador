@@ -13,7 +13,7 @@ import javax.mail.internet.MimeMessage;
 // FONTE: https://www.devmedia.com.br/enviando-email-com-javamail-utilizando-gmail/18034
 public class JavaMailApp
 {
-    public static void sendMail() {
+    public static void sendMail(String name) {
         System.out.println("Começando!!!");
 
         Properties props = new Properties();
@@ -43,8 +43,12 @@ public class JavaMailApp
                     .parse("cliente@gmail.com"); //Destinatário(s)
 
             message.setRecipients(Message.RecipientType.TO, toUser);
-            message.setSubject("Encomenda entregue!");//Assunto
-            message.setText("Sua encomenda chegou!");
+            message.setSubject("Sua compra chegou, aproveite!");//Assunto
+            message.setText("Olá" + name + "Sua compra chegou, aproveite!" +
+                           "Fizemos a entrega na Rua José Ribeiro Filho 35, Belo Horizonte CEP 31330500." +
+                    "Esperamos que você esteja contente com os produtos. Caso contrário, você pode devolvê-los até sábado 5 de novembro.\n" +
+                    "\n"
+            );
 
             /**Método para enviar a mensagem criada*/
             Transport.send(message);
