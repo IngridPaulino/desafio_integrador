@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -65,8 +66,19 @@ public class PackingAndDispatchController {
      * @return Retorna uma entidade do tipo Dispatch.
      * @throws NotFoundException - NotFoundException
      */
-    @PatchMapping("/dispatch/{id}")
+   @PatchMapping("/dispatch/{id}")
    public ResponseEntity<Dispatch> update(@PathVariable Long id) throws NotFoundException {
        return new ResponseEntity<>(packingAndDispatchService.updateStatusDispatch(id), HttpStatus.OK);
     }
+
+    
+   @DeleteMapping("/dispatch-entreges/delete")
+   public ResponseEntity<String> deleteDispatchEntregues() {
+       AtomicReference<Integer> delets = packingAndDispatchService.deleteAllPackingsEntregue();
+       if(delets.get() == 0) {
+           return new ResponseEntity<>("Você realizou todas as entregas, parabéns!!", HttpStatus.OK);
+       }
+       return new ResponseEntity<>("Falta entregar " + delets + " encomendas!", HttpStatus.OK);
+   }
+
 }

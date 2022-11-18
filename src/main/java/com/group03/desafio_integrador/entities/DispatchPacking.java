@@ -24,9 +24,6 @@ public class DispatchPacking {
     @NotNull
     private Long buyer_id;
 
-    //@NotNull
-    //private String buyer_Name;
-
     @NotNull
     private CategoryEnum category;
 

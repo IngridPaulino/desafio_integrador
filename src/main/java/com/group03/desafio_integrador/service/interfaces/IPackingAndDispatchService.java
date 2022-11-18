@@ -6,6 +6,7 @@ import com.group03.desafio_integrador.entities.Dispatch;
 import com.group03.desafio_integrador.entities.DispatchPacking;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public interface IPackingAndDispatchService {
 
@@ -28,4 +29,6 @@ public interface IPackingAndDispatchService {
      */
     Dispatch updateStatusDispatch(Long id) throws NotFoundException;
     List<Dispatch> packagedProductsFromSameBuyerAndCategory();
+
+    AtomicReference<Integer> deleteAllPackingsEntregue();
 }

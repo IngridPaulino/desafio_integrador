@@ -25,9 +25,6 @@ public class Dispatch {
     @NotNull
     private Long buyer_id;
 
-    //@NotNull
-    //private String buyer_Name;
-
     @NotNull
     private CategoryEnum category;
 

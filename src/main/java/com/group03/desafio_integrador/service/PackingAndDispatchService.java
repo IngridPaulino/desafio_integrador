@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -122,4 +123,22 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         return dispatchRepository.save(packingExist.get());
 
     }
+
+    /**
+     * @return
+     */
+    @Override
+    public AtomicReference<Integer> deleteAllPackingsEntregue() {
+        AtomicReference<Integer> sum = new AtomicReference<>(0);
+        List<Dispatch> getAllPackingForDispatch = getAllPackingForDispatch();
+
+        getAllPackingForDispatch.forEach(obj -> {
+            if(obj.getStatus() == DispatchStatusEnum.ENTREGUE) {
+                dispatchRepository.deleteById(obj.getId_Packing());
+            }
+            sum.updateAndGet(v -> v + 1);
+        });
+
+        return sum;
+    };
 }
