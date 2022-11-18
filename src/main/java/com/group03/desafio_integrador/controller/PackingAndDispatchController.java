@@ -1,6 +1,5 @@
 package com.group03.desafio_integrador.controller;
 
-import com.group03.desafio_integrador.dto.DispatchDTO;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
 import com.group03.desafio_integrador.entities.Dispatch;
 import com.group03.desafio_integrador.entities.DispatchPacking;
@@ -29,9 +28,9 @@ public class PackingAndDispatchController {
     } // TODO: 17/11/22 produtos salva toda vez que faço a requisição
 
     @PostMapping("/pack-products") //Embala pacotes
-    public ResponseEntity<String> packProducts() {
-        packingAndDispatchService.packagedProductsFromSameBuyerAndCategory();
-        return new ResponseEntity<>("Produtos embalados!!!", HttpStatus.CREATED);
+    public ResponseEntity<List<Dispatch>> packProducts() {
+
+        return new ResponseEntity<>(packingAndDispatchService.packagedProductsFromSameBuyerAndCategory(), HttpStatus.CREATED);
     }
 
     @GetMapping("/packing-for-dispatch")
@@ -39,7 +38,7 @@ public class PackingAndDispatchController {
         return new ResponseEntity<>(packingAndDispatchService.getAllPackingForDispatch(), HttpStatus.OK);
     }
 
-   @PutMapping("/dispatch")
+    @PatchMapping("/dispatch")
    public ResponseEntity<Dispatch> update(@RequestBody Dispatch dispatch) {
        return new ResponseEntity<>(packingAndDispatchService.updateStatusDispatch(dispatch), HttpStatus.OK);
     }

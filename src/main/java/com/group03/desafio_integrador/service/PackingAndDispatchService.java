@@ -44,7 +44,7 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
                         .cart_product_id(cartProduct.getCartProductId())
                         .product_id(cartProduct.getCartProductId())
                         .seller(cartProduct.getProductAdvertising().getSeller().getSellerId())
-                        .buyer(buyer)
+                        .buyer_id(cartProduct.getShoppingCart().getBuyer().getBuyerId())
                         .category(cartProduct.getProductAdvertising().getCategory())
                         .order_status(String.valueOf(cartProduct.getShoppingCart().getOrderStatus()))
                         .build();
@@ -67,8 +67,8 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
 
         return cartProductOrderFinished.stream().map(packing -> {
             DispatchPacking savePackingInBanco = DispatchPacking.builder()
-                    .buyer_id(packing.getBuyer().getBuyerId())
-                    .buyer_Name(packing.getBuyer().getBuyerName())
+                    .buyer_id(packing.getBuyer_id())
+                    //.buyer_Name(packing.getBuyer().getBuyerName())
                     .category(packing.getCategory())
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
@@ -86,18 +86,21 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
      */
 
     @Override
-    public void packagedProductsFromSameBuyerAndCategory() {
+    public List<Dispatch> packagedProductsFromSameBuyerAndCategory() {
+        List<Dispatch> a = new ArrayList<>();
         List<PackingOrderDTO> dispatch = packingRepository.packingByDispatch();
         for(PackingOrderDTO element : dispatch) {
             Dispatch savePacking = Dispatch.builder()
-                    .buyer_id(element.getBuyer().getBuyerId())
-                    .buyer_Name(element.getBuyer().getBuyerName())
+                    .buyer_id(element.getBuyer_id())
+                    //.buyer_Name(element.getBuyer().getBuyerName())
                     .category(element.getCategory())
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
 
             dispatchRepository.save(savePacking);
+            a.add(savePacking);
         }
+        return a;
     }
 
     /**
@@ -118,14 +121,18 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
      * @param dispatchPacking
      * @return Retorna o objeto do pacote entregue
      */
-    // TODO: 15/11/22 mudar a rota para path
     @Override
     public Dispatch updateStatusDispatch(Dispatch dispatchPacking) {
         Optional<Dispatch> packingExist = Optional.ofNullable(dispatchRepository.findById(dispatchPacking.getId_Packing())
                 .orElseThrow(() -> new NotFoundException("Id not found! ")));
-        Dispatch updated = dispatchRepository.save(dispatchPacking);
-       if(updated.getStatus() == DispatchStatusEnum.ENTREGUE) {
-           JavaMailApp.sendMail();
+
+        Dispatch s = packingExist.get();
+        s.setStatus(DispatchStatusEnum.ENTREGUE);
+
+        //Dispatch updated = dispatchRepository.save(dispatchPacking);
+        Dispatch updated = dispatchRepository.save(s);
+        if(updated.getStatus() == DispatchStatusEnum.ENTREGUE) {
+           JavaMailApp.sendMail(updated.getBuyer_Name());
         }
         return updated;
     }
