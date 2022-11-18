@@ -7,8 +7,8 @@ import lombok.*;
 
 import java.math.BigInteger;
 
-@Getter
-@Setter
+//@Getter
+//@Setter
 @Builder
 public class PackingOrderDTO {
     private Long cart_product_id;
@@ -17,4 +17,43 @@ public class PackingOrderDTO {
     private Long buyer_id;
     private CategoryEnum category;
     private String order_status;
+
+
+    public PackingOrderDTO(Long cart_product_id,
+                           Long product_id,
+                           Long seller,
+                           Long buyer_id,
+                           CategoryEnum category,
+                           String order_status) {
+        this.cart_product_id = cart_product_id;
+        this.product_id = product_id;
+        this.seller = seller;
+        this.buyer_id = buyer_id;
+        this.category = category;
+        this.order_status = order_status;
+    }
+
+    public Long getCart_product_id() {
+        return cart_product_id;
+    }
+
+    public Long getProduct_id() {
+        return product_id;
+    }
+
+    public Long getSeller() {
+        return seller;
+    }
+
+    public Long getBuyer_id() {
+        return buyer_id;
+    }
+
+    public CategoryEnum getCategory() {
+        return category;
+    }
+
+    public String getOrder_status() {
+        return order_status;
+    }
 }

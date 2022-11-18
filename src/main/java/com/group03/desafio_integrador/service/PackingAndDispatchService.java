@@ -35,10 +35,10 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         List<CartProduct> cartBuyerOfProducts = cartProductRepository.findAll();
 
         return cartBuyerOfProducts.stream().map(cartProduct -> {
-            Buyer buyer = Buyer.builder()
-                    .buyerId(cartProduct.getShoppingCart().getBuyer().getBuyerId())
-                    .buyerName(cartProduct.getShoppingCart().getBuyer().getBuyerName())
-                    .build();
+            //Buyer buyer = Buyer.builder()
+                   // .buyerId(cartProduct.getShoppingCart().getBuyer().getBuyerId())
+                   // .buyerName(cartProduct.getShoppingCart().getBuyer().getBuyerName())
+                  //  .build();
             if (cartProduct.getShoppingCart().getOrderStatus().equals(OrderStatusEnum.FINALIZADO)) {
                 PackingOrderDTO packing = PackingOrderDTO.builder()
                         .cart_product_id(cartProduct.getCartProductId())
@@ -63,9 +63,10 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
      */
     @Override
     public List<DispatchPacking> saveFinishedPurchases() {
+        List<DispatchPacking> dispatchPackings = new ArrayList<>();
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
 
-        return cartProductOrderFinished.stream().map(packing -> {
+        cartProductOrderFinished.forEach(packing -> {
             DispatchPacking savePackingInBanco = DispatchPacking.builder()
                     .buyer_id(packing.getBuyer_id())
                     //.buyer_Name(packing.getBuyer().getBuyerName())
@@ -73,8 +74,13 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
 
-            return packingRepository.save(savePackingInBanco);
-        }).collect(Collectors.toList());
+            dispatchPackings.add(savePackingInBanco);
+            //return packingRepository.save(savePackingInBanco);
+        });
+
+        notSavedataRepetidos(dispatchPackings);
+
+        return dispatchPackings;
     }
 
     /**
@@ -85,11 +91,13 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
      * @author Ingrid Paulino
      */
 
+
+
     @Override
     public List<Dispatch> packagedProductsFromSameBuyerAndCategory() {
         List<Dispatch> a = new ArrayList<>();
-        List<PackingOrderDTO> dispatch = packingRepository.packingByDispatch();
-        for(PackingOrderDTO element : dispatch) {
+        List<PackingOrder> dispatch = packingRepository.packingByDispatch();
+        for(PackingOrder element : dispatch) {
             Dispatch savePacking = Dispatch.builder()
                     .buyer_id(element.getBuyer_id())
                     //.buyer_Name(element.getBuyer().getBuyerName())
@@ -102,6 +110,8 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         }
         return a;
     }
+
+
 
     /**
      * Método responsável por retornar todos os pacotes que precisa ser entregues
@@ -132,7 +142,7 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         //Dispatch updated = dispatchRepository.save(dispatchPacking);
         Dispatch updated = dispatchRepository.save(s);
         if(updated.getStatus() == DispatchStatusEnum.ENTREGUE) {
-           JavaMailApp.sendMail(updated.getBuyer_Name());
+           JavaMailApp.sendMail();
         }
         return updated;
     }

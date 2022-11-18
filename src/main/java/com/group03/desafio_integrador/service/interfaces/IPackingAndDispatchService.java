@@ -12,4 +12,6 @@ public interface IPackingAndDispatchService {
     List<DispatchPacking> saveFinishedPurchases();
     Dispatch updateStatusDispatch(Dispatch dispatchPacking);
     List<Dispatch> packagedProductsFromSameBuyerAndCategory();
+
+    void notSavedataRepetidos(List<DispatchPacking> entyty);
 }
