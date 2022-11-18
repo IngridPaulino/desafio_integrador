@@ -10,7 +10,6 @@ import com.group03.desafio_integrador.utils.JavaMailApp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,7 +24,6 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
 
     /**
      * Método responsável por retornar todas as compras com status de finalizado
-     *
      * @return Retorna uma lista do tipo PackingOrderDTO
      * @author Ingrid Paulino
      */
@@ -35,10 +33,6 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         List<CartProduct> cartBuyerOfProducts = cartProductRepository.findAll();
 
         return cartBuyerOfProducts.stream().map(cartProduct -> {
-            //Buyer buyer = Buyer.builder()
-                   // .buyerId(cartProduct.getShoppingCart().getBuyer().getBuyerId())
-                   // .buyerName(cartProduct.getShoppingCart().getBuyer().getBuyerName())
-                  //  .build();
             if (cartProduct.getShoppingCart().getOrderStatus().equals(OrderStatusEnum.FINALIZADO)) {
                 PackingOrderDTO packing = PackingOrderDTO.builder()
                         .cart_product_id(cartProduct.getCartProductId())
@@ -57,42 +51,30 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
 
     /**
      * Método responsável por salvar todas as compras finalizadas na tabela de embalagem
-     *
-     * @return Retorna uma lista do tipo PackingOrderDTO
+     * @return Não tem retorno
      * @author Ingrid Paulino
      */
     @Override
-    public List<DispatchPacking> saveFinishedPurchases() {
-        List<DispatchPacking> dispatchPackings = new ArrayList<>();
+    public void saveFinishedPurchases() {
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
-
         cartProductOrderFinished.forEach(packing -> {
             DispatchPacking savePackingInBanco = DispatchPacking.builder()
                     .buyer_id(packing.getBuyer_id())
-                    //.buyer_Name(packing.getBuyer().getBuyerName())
                     .category(packing.getCategory())
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
 
-            dispatchPackings.add(savePackingInBanco);
-            //return packingRepository.save(savePackingInBanco);
+            if(packingRepository.findByCategoryAndBuyer(savePackingInBanco.getBuyer_id(), savePackingInBanco.getCategory()).isEmpty()) {
+                packingRepository.save(savePackingInBanco);
+            }
         });
-
-        notSavedataRepetidos(dispatchPackings);
-
-        return dispatchPackings;
     }
 
     /**
-     * Método responsável por empacotar os produtos do mesmo comprador e categoria. E salvar esses dados
-     * na tabela de despacho
-     *
+     * Método responsável por empacotar os produtos do mesmo comprador e categoria. E salvar esses dados na tabela de despacho
      * @return Não tem retorno
      * @author Ingrid Paulino
      */
-
-
-
     @Override
     public List<Dispatch> packagedProductsFromSameBuyerAndCategory() {
         List<Dispatch> a = new ArrayList<>();
@@ -108,14 +90,12 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
             dispatchRepository.save(savePacking);
             a.add(savePacking);
         }
+        //notSavedataRepetidosDispatch(a);
         return a;
     }
 
-
-
     /**
-     * Método responsável por retornar todos os pacotes que precisa ser entregues
-     *
+     * Método responsável por retornar todos os pacotes que estão prontos para entrega
      * @return retorna uma lista de Dispatch
      * @author Ingrid Paulino
      */
@@ -125,25 +105,21 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     }
 
     /**
-     * Método responsável por atualizar status de entrega em ABERTO ou ENTREGUE e mandar a notificação
-     * da entrega entrege para o comrador e vendedor
-     *
-     * @param dispatchPacking
+     * Método responsável por atualizar status de entrega e mandar notificação da entrega para o comprador e vendedor
+     * @param id
      * @return Retorna o objeto do pacote entregue
      */
     @Override
-    public Dispatch updateStatusDispatch(Dispatch dispatchPacking) {
-        Optional<Dispatch> packingExist = Optional.ofNullable(dispatchRepository.findById(dispatchPacking.getId_Packing())
+    public Dispatch updateStatusDispatch(Long id) throws NotFoundException {
+        Optional<Dispatch> packingExist = Optional.ofNullable(dispatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Id not found! ")));
 
-        Dispatch s = packingExist.get();
-        s.setStatus(DispatchStatusEnum.ENTREGUE);
+        packingExist.ifPresent(dispatch -> dispatch.setStatus(DispatchStatusEnum.ENTREGUE));
 
-        //Dispatch updated = dispatchRepository.save(dispatchPacking);
-        Dispatch updated = dispatchRepository.save(s);
-        if(updated.getStatus() == DispatchStatusEnum.ENTREGUE) {
-           JavaMailApp.sendMail();
+        if(packingExist.get().getStatus() == DispatchStatusEnum.ENTREGUE) {
+         JavaMailApp.sendMail(packingExist.get().getBuyer_id());
         }
-        return updated;
+        return dispatchRepository.save(packingExist.get());
+
     }
 }
