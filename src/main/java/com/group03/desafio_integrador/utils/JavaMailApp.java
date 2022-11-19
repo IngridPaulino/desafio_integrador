@@ -20,8 +20,8 @@ public class JavaMailApp
    // @Value("${string.datasource.email}")
    // private static String email;
     //@Autowired
-   // @Value("${string.datasource.passwordemail}")
-    //private static String password;
+    //@Value("${string.datasource.passwordemail}")
+    private static String password;
     public static void sendMail(Long name) {
         System.out.println("Começando!!!");
 
@@ -37,6 +37,7 @@ public class JavaMailApp
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication()
                     {
+                        // TODO: 19/11/22 Configurar variaveis de ambiente
                         return new PasswordAuthentication("xxxxxxx@gmail.com", "xxxxxxxxx");
                     }
                 });

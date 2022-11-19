@@ -64,10 +64,10 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
                     .category(packing.getCategory())
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
-
-            if(packingRepository.findByCategoryAndBuyer(savePackingInBanco.getBuyer_id(), savePackingInBanco.getCategory()).isEmpty()) {
-                packingRepository.save(savePackingInBanco);
-            }
+            // TODO: 19/11/22 Repetiçoes de dados quando é feito post na tabela dispatch_packing
+           // if(packingRepository.findByCategoryAndBuyer(savePackingInBanco.getBuyer_id(), savePackingInBanco.getCategory()).isEmpty()) {
+           //     packingRepository.save(savePackingInBanco);
+            //};
         });
     }
 
@@ -87,6 +87,8 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
                     .category(element.getCategory())
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
+
+            // TODO: 19/11/22 Repetiçoes de dados quando é feito post na tabela dispatch
 
             dispatchRepository.save(savePacking);
             a.add(savePacking);
@@ -140,5 +142,5 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         });
 
         return sum;
-    };
+    }
 }

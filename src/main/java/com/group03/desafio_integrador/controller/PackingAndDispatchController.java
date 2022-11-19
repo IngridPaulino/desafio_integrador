@@ -71,7 +71,6 @@ public class PackingAndDispatchController {
        return new ResponseEntity<>(packingAndDispatchService.updateStatusDispatch(id), HttpStatus.OK);
     }
 
-    
    @DeleteMapping("/dispatch-entreges/delete")
    public ResponseEntity<String> deleteDispatchEntregues() {
        AtomicReference<Integer> delets = packingAndDispatchService.deleteAllPackingsEntregue();
@@ -80,5 +79,4 @@ public class PackingAndDispatchController {
        }
        return new ResponseEntity<>("Falta entregar " + delets + " encomendas!", HttpStatus.OK);
    }
-
 }
