@@ -2,6 +2,7 @@ package com.group03.desafio_integrador.service.interfaces;
 
 import com.group03.desafio_integrador.advisor.exceptions.NotFoundException;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
+import com.group03.desafio_integrador.entities.CartProduct;
 import com.group03.desafio_integrador.entities.Dispatch;
 import com.group03.desafio_integrador.entities.DispatchPacking;
 
@@ -18,7 +19,9 @@ public interface IPackingAndDispatchService {
      * @author Ingrid Paulino
      * @return Não tem retorno
      */
-    void saveFinishedPurchases();
+    List<DispatchPacking> saveFinishedPurchases();
+
+    void deleteAllCartProductFinished();
 
     /**
      * Método responsável por retornar o status da entrega atualizada.
@@ -31,4 +34,6 @@ public interface IPackingAndDispatchService {
     List<Dispatch> packagedProductsFromSameBuyerAndCategory();
 
     AtomicReference<Integer> deleteAllPackingsEntregue();
+    List<CartProduct> findAllCartProduct();
+    void deleteAllCartProductEmbalados();
 }

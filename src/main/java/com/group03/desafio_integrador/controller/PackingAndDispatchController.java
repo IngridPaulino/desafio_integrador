@@ -2,7 +2,9 @@ package com.group03.desafio_integrador.controller;
 
 import com.group03.desafio_integrador.advisor.exceptions.NotFoundException;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
+import com.group03.desafio_integrador.entities.CartProduct;
 import com.group03.desafio_integrador.entities.Dispatch;
+import com.group03.desafio_integrador.entities.DispatchPacking;
 import com.group03.desafio_integrador.service.PackingAndDispatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class PackingAndDispatchController {
     @Autowired
     public PackingAndDispatchService packingAndDispatchService;
+
+
+
+    @GetMapping("/packing/all")
+    public ResponseEntity<List<CartProduct>> findAllCartProduct() {
+        return new ResponseEntity<>(packingAndDispatchService.findAllCartProduct(), HttpStatus.OK);
+    }
 
     /**
      * Rota responsável por retornar as compras finalizadas.
@@ -34,9 +43,10 @@ public class PackingAndDispatchController {
      * @return Retorna uma string
      */
     @PostMapping("/save-finished-purchases")
-    public ResponseEntity<String> saveFinishedPurchases() {
-        packingAndDispatchService.saveFinishedPurchases();
-        return new ResponseEntity<>("salvo com sucesso!!!!", HttpStatus.CREATED);
+    public ResponseEntity<List<DispatchPacking>> saveFinishedPurchases() {
+        //packingAndDispatchService.saveFinishedPurchases();
+        return new ResponseEntity<>(packingAndDispatchService.saveFinishedPurchases()
+, HttpStatus.CREATED);
     }
 
     /**

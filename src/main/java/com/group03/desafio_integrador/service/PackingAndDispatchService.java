@@ -23,6 +23,11 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     @Autowired
     private DispatchRepository dispatchRepository;
 
+    @Override
+    public List<CartProduct> findAllCartProduct() {
+        return cartProductRepository.findAll();
+    }
+
     /**
      * Método responsável por retornar todas as compras com status de finalizado
      * @return Retorna uma lista do tipo PackingOrderDTO
@@ -50,13 +55,20 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         }).collect(Collectors.toList()).get(0);
     }
 
+    @Override
+    public void deleteAllCartProductFinished() {
+        List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
+        cartProductOrderFinished.forEach(cartProduct -> cartProductRepository.deleteById(cartProduct.getCart_product_id()));
+    }
+
     /**
      * Método responsável por salvar todas as compras finalizadas na tabela de embalagem
      * @return Não tem retorno
      * @author Ingrid Paulino
      */
     @Override
-    public void saveFinishedPurchases() {
+    public List<DispatchPacking> saveFinishedPurchases() {
+        List<DispatchPacking> dispatchPackings = new ArrayList<>();
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
         cartProductOrderFinished.forEach(packing -> {
             DispatchPacking savePackingInBanco = DispatchPacking.builder()
@@ -64,11 +76,17 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
                     .category(packing.getCategory())
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
-            // TODO: 19/11/22 Repetiçoes de dados quando é feito post na tabela dispatch_packing
-           // if(packingRepository.findByCategoryAndBuyer(savePackingInBanco.getBuyer_id(), savePackingInBanco.getCategory()).isEmpty()) {
-           //     packingRepository.save(savePackingInBanco);
-            //};
+            packingRepository.save(savePackingInBanco);
+            dispatchPackings.add(savePackingInBanco);
+            deleteAllCartProductFinished();
         });
+        return dispatchPackings;
+    }
+
+    @Override
+    public void deleteAllCartProductEmbalados() {
+        List<DispatchPacking> dispatchPackings = packingRepository.findAll();
+        dispatchPackings.forEach(packaged -> packingRepository.deleteById(packaged.getId_Packing()));
     }
 
     /**
@@ -83,17 +101,14 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         for(PackingOrder element : dispatch) {
             Dispatch savePacking = Dispatch.builder()
                     .buyer_id(element.getBuyer_id())
-                    //.buyer_Name(element.getBuyer().getBuyerName())
                     .category(element.getCategory())
                     .status(DispatchStatusEnum.ABERTO)
                     .build();
 
-            // TODO: 19/11/22 Repetiçoes de dados quando é feito post na tabela dispatch
-
             dispatchRepository.save(savePacking);
             a.add(savePacking);
+            deleteAllCartProductEmbalados();
         }
-        //notSavedataRepetidosDispatch(a);
         return a;
     }
 
@@ -123,7 +138,6 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
          JavaMailApp.sendMail(packingExist.get().getBuyer_id());
         }
         return dispatchRepository.save(packingExist.get());
-
     }
 
     /**
