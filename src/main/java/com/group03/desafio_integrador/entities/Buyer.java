@@ -1,6 +1,8 @@
 package com.group03.desafio_integrador.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,4 +30,11 @@ public class Buyer {
     @Email
     private String email;
 
+    @NotBlank
+    private String address;
+
+    //@OneToOne(mappedBy = "buyer", cascade = CascadeType.PERSIST)
+    //@JsonIgnoreProperties("buyer")
+    //@JsonIgnore
+    //private Dispatch dispatch;
 }

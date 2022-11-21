@@ -22,7 +22,7 @@ public class JavaMailApp
     //@Autowired
     //@Value("${string.datasource.passwordemail}")
     private static String password;
-    public static void sendMail(Long name) {
+    public static void sendMail(String name, String emailCliente, String address) {
         System.out.println("Começando!!!");
 
         Properties props = new Properties();
@@ -38,7 +38,7 @@ public class JavaMailApp
                     protected PasswordAuthentication getPasswordAuthentication()
                     {
                         // TODO: 19/11/22 Configurar variaveis de ambiente
-                        return new PasswordAuthentication("xxxxxxx@gmail.com", "xxxxxxxxx");
+                        return new PasswordAuthentication("ingridpaulino1012@gmail.com", "xneaaucfdygkuzei");
                     }
                 });
 
@@ -47,15 +47,15 @@ public class JavaMailApp
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("xxxxxxx@gmail.com")); //Remetente
+            message.setFrom(new InternetAddress("ingridpaulino1012@gmail.com")); //Remetente
 
             Address[] toUser = InternetAddress
-                    .parse("cliente@gmail.com"); //Destinatário(s)
+                    .parse(emailCliente); //Destinatário(s)
 
             message.setRecipients(Message.RecipientType.TO, toUser);
             message.setSubject("Sua compra chegou, aproveite!");//Assunto
-            message.setText("Olá" + name + ", sua compra chegou, aproveite!" +
-                           "Fizemos a entrega na Rua José Ribeiro Filho 35, Belo Horizonte CEP 31330500." +
+            message.setText("Olá " + name + ", sua compra chegou, aproveite! " +
+                           "Fizemos a entrega na " + address + "." +
                     "Esperamos que você esteja contente com os produtos. Caso contrário, você pode devolvê-los até sábado 5 de novembro.\n" +
                     "\n"
             );
