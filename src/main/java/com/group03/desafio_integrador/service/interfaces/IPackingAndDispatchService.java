@@ -27,7 +27,7 @@ public interface IPackingAndDispatchService {
      * Método responsável por deletar os carrinhos de compra que foram salvos/registrados na tabela de embalagem
      * @author Ingrid Paulino
      */
-    void deleteAllCartProductFinished();
+    //void deleteAllCartProductFinished();
 
     /**
      * Método responsável por salvar todas as compras finalizadas na tabela de embalagem
@@ -39,7 +39,7 @@ public interface IPackingAndDispatchService {
      * Método responsável por deletar os carrinhos registrados na tabela de embalagem.
      * @author Ingrid Paulino
      */
-    void deleteAllCartProductEmbalados();
+    //void deleteAllCartProductEmbalados();
 
     /**
      * Método responsável por empacotar na mesma embalagem os produtos com categoria e comprador iguais e salvar esses dados na tabela de despacho

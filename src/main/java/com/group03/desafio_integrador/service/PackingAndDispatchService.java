@@ -66,8 +66,8 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
      * Método responsável por deletar os carrinhos de compra que foram salvos/registrados na tabela de embalagem
      * @author Ingrid Paulino
      */
-    @Override
-    public void deleteAllCartProductFinished() {
+    //@Override
+    private void deleteAllCartProductFinished() {
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
         cartProductOrderFinished.forEach(cartProduct -> cartProductRepository.deleteById(cartProduct.getCart_product_id()));
     }
@@ -95,8 +95,8 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
      * Método responsável por deletar os carrinhos registrados na tabela de embalagem.
      * @author Ingrid Paulino
      */
-    @Override
-    public void deleteAllCartProductEmbalados() {
+    //@Override
+    private void deleteAllCartProductEmbalados() {
         List<DispatchPacking> dispatchPackings = packingRepository.findAll();
         dispatchPackings.forEach(packaged -> packingRepository.deleteById(packaged.getId_Packing()));
     }
