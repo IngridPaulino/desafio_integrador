@@ -28,18 +28,17 @@ public class WarehouseService implements IWarehouseService {
     private final IProductAdvertisingService productService;
 
     /**
-     * Método responsável por retornar o armazem de acordo com o Id informado.
+     * Método responsável por retornar o armazém conforme Id informado.
      * @author Gabriel Morais
      * @param id - Long
-     * @return Warehouse - Retorna uma entidade do tipo Warehouse.
-     * @throws NotFoundException
+     * @return Retorna uma entidade do tipo Warehouse.
+     * @throws NotFoundException - NotFoundException
      */
     @Override
     public Warehouse getById(Long id) throws NotFoundException {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("Warehouse not found!"));
     }
 
-    // TODO: 16/11/22 ver quem criou este método
     /**
      * Método responsável por retornar a lista de todos os armazéns cadastrados.
      * @author grupo3

@@ -11,18 +11,18 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+//@Getter
+//@Setter
+//@AllArgsConstructor
+//@NoArgsConstructor
 public class SortingBatch {
     private SortingEnum filter;
     private List<Batch> batchList;
 
     /**
-     * Método responsável por ordernar uma lista de lotes por lote.
+     * Método responsável por ordenar uma lista de lotes por lote.
      * @author Amanda Zotelli, Rosalia Padoin
-     * @return List<BatchDTO> - Retorna uma lista de lotes ordenados por lote.
+     * @return Retorna uma lista de lotes ordenados por lote.
      */
     public static List<BatchDTO> ordenatedByBatch(List<BatchDTO> batches) {
        return batches.stream().sorted(Comparator.comparing(BatchDTO::getBatchId))
@@ -30,9 +30,9 @@ public class SortingBatch {
     }
 
     /**
-     * Método responsável por ordernar uma lista de lotes pela quantidade de produtos no lote.
+     * Método responsável por ordenar uma lista de lotes pela quantidade de produtos no lote.
      * @author Amanda Zotelli, Rosalia Padoin
-     * @return List<BatchDTO> - Retorna uma lista de lotes ordenados pela quantidade de produtos no lote.
+     * @return Retorna uma lista de lotes ordenados pela quantidade de produtos no lote.
      */
     public static List<BatchDTO> ordenatedByQuantity(List<BatchDTO> batches) {
         return batches.stream().sorted(Comparator.comparing(BatchDTO::getQuantity))
@@ -40,13 +40,12 @@ public class SortingBatch {
     }
 
     /**
-     * Método responsável por ordernar uma lista de lotes pela data de vencimento dos produtos no lote.
+     * Método responsável por ordenar uma lista de lotes pela data de vencimento dos produtos no lote.
      * @author Amanda Zotelli, Rosalia Padoin
-     * @return List<BatchDTO> - Retorna uma lista de lotes ordenados pela data de vencimento dos produtos no lote.
+     * @return Retorna uma lista de lotes ordenados pela data de vencimento dos produtos no lote.
      */
     public static List<BatchDTO> ordenatedByExpirationDate(List<BatchDTO> batches) {
         return batches.stream().sorted(Comparator.comparing(BatchDTO::getExpirationDate))
                 .collect(Collectors.toList());
     }
 }
-

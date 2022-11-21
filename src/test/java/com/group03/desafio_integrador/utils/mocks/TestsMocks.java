@@ -72,9 +72,7 @@ public class TestsMocks {
     }
 
 
-
     public static InboundOrder mockInboundOrder() {
-        // TODO: 17/11/22 criei a lista pois estava vazia 
         batchList.add(TestsMocks.mockBatch());
 
         return new InboundOrder(1L,
@@ -86,13 +84,23 @@ public class TestsMocks {
     }
 
     public static InboundOrder mockCreateInboundOrder() {
-
-        // TODO: 17/11/22 criei a lista pois estava vazia
         batchList.add(TestsMocks.createBatch());
 
         return new InboundOrder(null,
                 LocalDate.parse("2022-11-09"),
                 Section.builder().sectionId(1L).build(),
+                Warehouse.builder().warehouseId(1L).build(),
+                batchList);
+    }
+
+
+    public static InboundOrder mockCreateErrorInboundOrder() {
+
+        batchList.add(TestsMocks.createBatch());
+
+        return new InboundOrder(null,
+                LocalDate.parse("2022-11-09"),
+                Section.builder().sectionId(3L).build(),
                 Warehouse.builder().warehouseId(1L).build(),
                 batchList);
     }
@@ -278,7 +286,6 @@ public class TestsMocks {
 
     }
 
-    // PUT rota para alterar o status de um pedido de ABERTO para FINALIZADO
     public static ShoppingCart mockShoppingCartFinished() {
         return new ShoppingCart(
                 1L,

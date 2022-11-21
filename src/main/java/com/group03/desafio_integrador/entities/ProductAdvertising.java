@@ -29,7 +29,6 @@ public class ProductAdvertising {
     @NotNull
     private Long productId;
 
-    // TODO: 09/11/22 verificar campos redundantes
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="GMT")
     @NotNull
     private LocalDate fabricationDate;

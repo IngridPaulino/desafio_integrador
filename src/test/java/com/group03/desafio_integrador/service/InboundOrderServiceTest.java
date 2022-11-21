@@ -1,5 +1,6 @@
 package com.group03.desafio_integrador.service;
 
+import com.group03.desafio_integrador.advisor.exceptions.NotAcceptableException;
 import com.group03.desafio_integrador.advisor.exceptions.NotFoundException;
 import com.group03.desafio_integrador.dto.BatchStockDTO;
 
@@ -110,6 +111,24 @@ class InboundOrderServiceTest {
         assertThat(inboundResponse).isNotNull();
         assertThat(inboundResponse.getBatchStock().containsAll(mockInboundOrder.getBatchList())).isTrue();
     }
+
+//    @Test
+//    void save_returnNotAcceptableException_whenInvalidData() throws Exception {
+////        BDDMockito.doNothing().when(inboundOrderService)
+////                .validateOrder(ArgumentMatchers.eq(TestsMocks.mockCreateErrorInboundOrder()));
+//
+//        BDDMockito.when(inboundOrderRepository.save(ArgumentMatchers.any(InboundOrder.class)))
+//                .thenReturn(TestsMocks.mockCreateErrorInboundOrder());
+//
+//        inboundOrderService.save(TestsMocks.mockCreateErrorInboundOrder());
+//
+//        BDDMockito.verify(inboundOrderService, BDDMockito.times(1))
+//                .validateOrder(ArgumentMatchers.eq(mockCreateInboundOrder));
+//
+//        NotAcceptableException notAcceptableException = assertThrows(NotAcceptableException.class, () -> inboundOrderService.validateOrder(TestsMocks.mockCreateErrorInboundOrder()));
+//
+//        assertThat(notAcceptableException.getMessage()).isEqualTo("Product " + TestsMocks.mockCreateErrorInboundOrder().getBatchList().get(0).getProductId().getProductId()  + " not belongs to this section");
+//    }
 
     @Test
     void update_returnSuccess_whenValidData() {

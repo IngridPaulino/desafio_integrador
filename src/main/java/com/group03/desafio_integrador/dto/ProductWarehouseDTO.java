@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter
-@Setter
+//@Setter
 @Builder
 public class ProductWarehouseDTO {
     private Long productId;

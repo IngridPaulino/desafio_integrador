@@ -18,7 +18,7 @@ public class ShoppingCartService implements IShoppingCartService {
      * Método responsável por salvar um novo shoppingCart.
      * @author Amanda Zotelli
      * @param shoppingCart - ShoppingCart
-     * @return ShoppingCart - Retorna uma entidade do tipo shoppingCart.
+     * @return Retorna uma entidade do tipo shoppingCart.
      */
     @Override
     public ShoppingCart save(ShoppingCart shoppingCart) {
@@ -29,8 +29,8 @@ public class ShoppingCartService implements IShoppingCartService {
      * Método responsável por atualizar um shoppingCart com o order status de finalizado.
      * @author Amanda Zotelli
      * @param id - Long
-     * @return ShoppingCart - Retorna uma entidade do tipo shoppingCart.
-     * @throws NotFoundException
+     * @return Retorna uma entidade do tipo shoppingCart.
+     * @throws NotFoundException - NotFoundException
      */
     @Override
     public ShoppingCart update(Long id) {

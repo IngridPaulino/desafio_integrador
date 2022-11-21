@@ -10,11 +10,11 @@ import java.util.List;
 public interface IBatchService {
 
     /**
-     * Método responsável por retornar o lote de acordo com o Id informado.
+     * Método responsável por retornar o lote conforme Id informado.
      * @author Gabriel Morais
      * @param id - Long
-     * @return Batch - Retorna uma entidade do tipo Batch.
-     * @throws NotFoundException
+     * @return Retorna uma entidade do tipo Batch.
+     * @throws NotFoundException - NotFoundException
      */
     Batch getById(Long id) throws NotFoundException;
 
@@ -22,15 +22,15 @@ public interface IBatchService {
      * Método responsável por salvar um novo lote.
      * @author Gabriel Morais
      * @param batch - Batch
-     * @return Batch - Retorna uma entidade do tipo Batch.
+     * @return Retorna uma entidade do tipo Batch.
      */
     Batch save(Batch batch);
 
     /**
-     * Método responsável por listar os lotes de produto de acordo com o Id do Produto
-     * @author Gabriel Morais
+     * Método responsável por listar os lotes de produto conforme o Id do Produto
+     * @author Amanda Zotelli
      * @param id - ProductAdvertising
-     * @return List<Batch>  - Retorna uma Lista da entidade do tipo Batch.
+     * @return Retorna uma Lista da entidade do tipo Batch.
      */
     List<Batch> findBatchByProductId(ProductAdvertising id);
 
@@ -56,3 +56,4 @@ public interface IBatchService {
      */
     BatchDueDateStockDTO getAllDueDateCategory(Integer numberOfDays, String category, String sorting);
 }
+

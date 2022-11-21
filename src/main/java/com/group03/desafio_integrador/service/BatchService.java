@@ -35,8 +35,8 @@ public class BatchService implements IBatchService {
      * Método responsável por retornar o lote de acordo com o Id informado.
      * @author Gabriel Morais
      * @param id - Long
-     * @return Batch - Retorna uma entidade do tipo Batch.
-     * @throws NotFoundException
+     * @return Retorna uma entidade do tipo Batch.
+     * @throws NotFoundException - NotFoundException
      */
     @Override
     public Batch getById(Long id) throws NotFoundException {
@@ -48,7 +48,7 @@ public class BatchService implements IBatchService {
      * Método responsável por salvar um novo lote.
      * @author Gabriel Morais
      * @param batch - Batch
-     * @return Batch - Retorna uma entidade do tipo Batch.
+     * @return Retorna uma entidade do tipo Batch.
      */
     @Override
     public Batch save(Batch batch) {
@@ -58,8 +58,8 @@ public class BatchService implements IBatchService {
     /**
      * Método responsável por listar os lotes de produto de acordo com o Id do Produto
      * @author Amanda Zotelli
-     * @param id - ProductAdvertising
-     * @return List<Batch>  - Retorna uma Lista da entidade do tipo Batch.
+     * @param id - do tipo ProductAdvertising
+     * @return Retorna uma lista de entidades do tipo Batch.
      */
     @Override
     public List<Batch> findBatchByProductId(ProductAdvertising id) {

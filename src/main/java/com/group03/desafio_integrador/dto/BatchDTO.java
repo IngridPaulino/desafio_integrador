@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Getter
-@Setter
+//@Setter
 @Builder
 public class BatchDTO {
     private Long batchId;

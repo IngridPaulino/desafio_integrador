@@ -17,9 +17,9 @@ public class CartProductService implements ICartProductService {
     private final CartProductRepository repository;
 
     /**
-     * Método responsável por listar todos as ordens de compra do sistema.
+     * Método responsável por listar todas as ordens de compra do sistema.
      * @author Amanda Zotelli
-     * @return List<CartProduct> - Retorna uma lista da entidade do tipo CartProduct.
+     * @return Retorna uma lista da entidade do tipo CartProduct.
      */
     @Override
     public List<CartProduct> getAll() {
@@ -30,7 +30,7 @@ public class CartProductService implements ICartProductService {
      * Método responsável por salvar uma nova ordem de compra.
      * @author Amanda Zotelli
      * @param cartProduct - CartProduct
-     * @return CartProduct - Retorna uma entidade do tipo BatchStockDTO.
+     * @return Retorna uma entidade do tipo BatchStockDTO.
      */
     @Override
     public CartProduct save(CartProduct cartProduct) {
@@ -40,8 +40,8 @@ public class CartProductService implements ICartProductService {
     /**
      * Método responsável por salvar uma lista de ordens de compra.
      * @author Amanda Zotelli
-     * @param listCart - List<CartProduct>
-     * @return List<CartProduct>  - Retorna uma lista da entidade do tipo CartProduct.
+     * @param listCart - lista de todas as ordens de compra do tipo CartProduct
+     * @return Retorna uma lista da entidade do tipo CartProduct.
      */
     @Override
     public List<CartProduct> saveAll(List<CartProduct> listCart) {
@@ -49,11 +49,11 @@ public class CartProductService implements ICartProductService {
     }
 
     /**
-     * Método responsável por listar as ordens de compra de acordo com o Id.
+     * Método responsável por listar as ordens de compra pelo Id.
      * @author Amanda Zotelli
      * @param id - Long
-     * @return List<CartProduct>  - Retorna uma lista da entidade do tipo CartProduct.
-     * @throws NotFoundException
+     * @return Retorna uma lista da entidade do tipo CartProduct.
+     * @throws NotFoundException - NotFoundException
      */
     @Override
     public List<CartProduct> getCartProducts(Long id) {

@@ -24,11 +24,10 @@ public class InboundOrderService implements IInboundOrderService {
     private final ISectionService sectionService;
     private final IBatchService batchService;
 
-
     /**
-     * Método responsável por listar todos os pedidos de ordem do armazem.
+     * Método responsável por listar todos os pedidos de ordem do armazém.
      *
-     * @return List<InboundOrder> - Retorna uma entidade do tipo InboundOrder.
+     * @return Retorna uma lista de todos os InboundOrders cadastrados.
      * @author Gabriel Morais
      */
     @Override
@@ -37,10 +36,11 @@ public class InboundOrderService implements IInboundOrderService {
     }
 
     /**
-     * Método responsável por atualizar as informações do lote contido no armazem e validar se a capacidade do armazem suporta o recebimento da carga.
+     * Método responsável por atualizar as informações do lote contido no armazém e validar se a capacidade do armazém suporta o recebimento da carga.
      *
-     * @param Batch - batch
-     * @return Batch - Retorna uma entidade do tipo Batch.
+     * @param batch - do tipo Batch
+     * @return Retorna a entidade do tipo Batch com seus dados atualizados.
+     * @throws NotFoundException - NotFoundException
      * @author Gabriel Morais
      */
     @Override
@@ -61,11 +61,10 @@ public class InboundOrderService implements IInboundOrderService {
     }
 
     /**
-     * Método responsável por salvar um novo lote no pedido de ordem do armazem.
+     * Método responsável por salvar um novo lote no pedido de ordem do armazém.
      *
-     * @param InboundOrder - inboundOrder
-     * @return BatchStockDTO - Retorna um dto do tipo BatchStockDTO.
-     * @throws Exception
+     * @param inboundOrder - do tipo InboundOrder
+     * @return Retorna um dto do tipo BatchStockDTO.
      * @author Gabriel Morais
      */
     @Override
@@ -80,8 +79,7 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável por realizar a validação do pedido de ordem.
      *
-     * @param InboundOrder - inboundOrder
-     * @throws Exception
+     * @param inboundOrder - do tipo InboundOrder
      * @author Gabriel Morais
      */
     public void validateOrder(InboundOrder inboundOrder) throws Exception {
@@ -93,12 +91,14 @@ public class InboundOrderService implements IInboundOrderService {
     }
 
     /**
-     * Método responsável por realizar a verificação se o armazem existe.
+     * Método responsável por realizar a verificação se o armazém existe e se possui um representante.
      *
-     * @param Warehouse - warehouseId
+     * @param warehouseId - do tipo Warehouse
+     * @throws NotFoundException - NotFoundException
      * @author Gabriel Morais
      */
-    protected void validateWarehouse(Warehouse warehouseId) {
+    protected void validateWarehouse(Warehouse warehouseId) throws Exception {
+
         Warehouse warehouse = warehouseService.getById(warehouseId.getWarehouseId());
 
         if (warehouse.getManager() == null) {
@@ -109,8 +109,8 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável por realizar a verificação das informações dos produtos no lote.
      *
-     * @param List<Batch> - batchList
-     * @throws NotFoundException
+     * @param batchList - lista do tipo Batch
+     * @throws NotFoundException - NotFoundException
      * @author Gabriel Morais
      */
     protected void validateProducts(List<Batch> batchList) {
@@ -136,8 +136,9 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável por realizar a verificação da sessão.
      *
-     * @param InboundOrder - inboundOrder
-     * @throws NotFoundException
+     * @param inboundOrder - do tipo inboundOrder
+     * @throws NotFoundException - NotFoundException
+     * @throws NotAcceptableException - NotAcceptableException
      * @author Gabriel Morais
      */
     protected void validateSection(InboundOrder inboundOrder) {
@@ -167,11 +168,13 @@ public class InboundOrderService implements IInboundOrderService {
     }
 
     /**
-     * Método responsável por fornecer uma lista de produtos do armazém filtrado pelo seu id.
+
+     * Método responsável por retornar um filtro de warehouses e sections que possuem certo produto em seu estoque.
+     *
+     * @param sectionDto - do tipo SectionDTO
+     * @param productWarehouse - lista do tipo ProductWarehouseStockDTO
+     * @return lista de warehouses e sections que possuem certo produto em seu estoque.
      * @author Amanda Zotelli, Carolina Hakamada, Gabriel Morais, Ingrid Paulino, Mariana Saraiva e Rosalia Padoin
-     * @param sectionDto - SectionDTO
-     * @param productWarehouse - List<ProductWarehouseStockDTO>
-     * @return Retorna uma lista do tipo List<ProductWarehouseStockDTO>
      */
     private static List<ProductWarehouseStockDTO> getFilterWarehouseById(SectionDTO sectionDto, List<ProductWarehouseStockDTO> productWarehouse) {
         return productWarehouse.stream()
@@ -182,9 +185,8 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável fornecer uma lista de produtos com todos os lotes onde aparece.
      *
-     * @param Long - productId
-     * @return List<ProductWarehouseStockDTO> - Retorna uma lista de dto do tipo ProductWarehouseStockDTO.
-     * @throws Exception
+     * @param productId - do tipo Long
+     * @return Retorna uma lista de dto do tipo ProductWarehouseStockDTO.
      * @author Amanda Zotelli, Carolina Hakamada, Gabriel Morais, Ingrid Paulino, Mariana Saraiva e Rosalia Padoin
      */
     public List<ProductWarehouseStockDTO> getAllProductWarehouseStock(Long productId) throws Exception {
@@ -211,14 +213,12 @@ public class InboundOrderService implements IInboundOrderService {
         return productWarehouseStockDTOList;
     }
 
-
     /**
      * Método responsável verificar a data de validade dos produtos de um lote.
      *
-     * @param Long - productId
-     * @param List<Batch> - batchStream
-     * @param List<ValidationErrorDetail> - errorDetails
-     * @return void - Método somente de verificação.
+     * @param productId - do tipo Long
+     * @param batchStream - lista do tipo Batch
+     * @param errorDetails - lista do tipo ValidationErrorDetail
      * @author Amanda Zotelli, Carolina Hakamada, Gabriel Morais, Ingrid Paulino, Mariana Saraiva e Rosalia Padoin
      */
     private static void verifyBatchDueDate(
@@ -234,12 +234,11 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável por adicionar os lotes onde os produtos aparecem em seu armazém e seção.
      *
-     * @param Long - productId
-     * @param List<ProductWarehouseStockDTO> - productWarehouseStockDTOList
-     * @param SectionDTO - sectionDto
-     * @param List<ProductWarehouseStockDTO> - warehouseByIdList
-     * @param List<BatchDTO> - batchStockDTOS
-     * @return void - Método somente de verificação.
+     * @param productId - do tipo Long
+     * @param productWarehouseStockDTOList - lista do tipo ProductWarehouseStockDTO
+     * @param sectionDto - do tipo SectionDTO
+     * @param warehouseByIdList - lista do tipo ProductWarehouseStockDTO
+     * @param batchStockDTOS - lista do tipo BatchDTO
      * @author Amanda Zotelli, Carolina Hakamada, Gabriel Morais, Ingrid Paulino, Mariana Saraiva e Rosalia Padoin
      */
     private static void fillProductWarehouseStockList(
@@ -267,9 +266,9 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável por construir um dto de ProductWarehouseStock.
      *
-     * @param Long - productId
-     * @param SectionDTO - sectionDto
-     * @param List<BatchDTO> - batchStockDTOS
+     * @param productId - do tipo Long
+     * @param sectionDto - do tipo SectionDTO
+     * @param batchStockDTOS - lista do tipo BatchDTO
      * @return ProductWarehouseStockDTO - Retorna o build de um ProductWarehouseDTO.
      * @author Amanda Zotelli, Carolina Hakamada, Gabriel Morais, Ingrid Paulino, Mariana Saraiva e Rosalia Padoin
      */
@@ -288,8 +287,8 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável por criar uma Lista de Lotes, com o build de BatchDTO.
      *
-     * @param List<Batch> - batchStream
-     * @return List<BatchDTO> - Retorna uma Lista de Lotes.
+     * @param batchStream - lista do Batch
+     * @return Retorna uma Lista de Batches.
      * @author Amanda Zotelli, Carolina Hakamada, Gabriel Morais, Ingrid Paulino, Mariana Saraiva e Rosalia Padoin
      */
     private static List<BatchDTO> getBatchStockDTOS(List<Batch> batchStream) {
@@ -304,8 +303,8 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável por fazer o build de uma Seção.
      *
-     * @param InboundOrder - inboundOrder
-     * @return SectionDTO - Retorna uma seção.
+     * @param inboundOrder - do tipo InboundOrder
+     * @return Retorna uma seção do tipo SectionDTO.
      * @author Amanda Zotelli, Carolina Hakamada, Gabriel Morais, Ingrid Paulino, Mariana Saraiva e Rosalia Padoin
      */
     private static SectionDTO buildSectionDTO(InboundOrder inboundOrder) {
@@ -318,9 +317,9 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável por filtrar os lotes que contém determinado produto.
      *
-     * @param Long - productId
-     * @param InboundOrder - inboundOrder
-     * @return List<Batch> - Retorna uma lista de lotes filtrados por produto.
+     * @param productId - do tipo Long
+     * @param inboundOrder - InboundOrder
+     * @return Retorna uma lista de lotes filtrados por produto.
      * @author Amanda Zotelli, Carolina Hakamada, Gabriel Morais, Ingrid Paulino, Mariana Saraiva e Rosalia Padoin
      */
     private static List<Batch> getBatchStreamFilteredByProductId(Long productId, InboundOrder inboundOrder) {
@@ -332,9 +331,9 @@ public class InboundOrderService implements IInboundOrderService {
     /**
      * Método responsável por trazer os lotes ordenados por um parâmetro, podendo ser de Lote, Quantidade de produto no lote ou Data de validade do produto.
      *
-     * @param List<ProductWarehouseStockDTO> - productWarehouseStockDTOList
-     * @param String - sorting
-     * @return List<ProductWarehouseStockDTO> - Retorna a lista de ProductWarehouseStockDTO de acordo com o parâmetro de ordenação passado.
+     * @param productWarehouseStockDTOList - lista do tipo ProductWarehouseStockDTO
+     * @param sorting - do tipo String
+     * @return Retorna a lista de ProductWarehouseStockDTO referente ao parâmetro de ordenação passado.
      * @author Amanda Zotelli e Rosalia Padoin
      */
     @Override
@@ -354,8 +353,4 @@ public class InboundOrderService implements IInboundOrderService {
         }
         return productWarehouseStockDTOList;
     }
-
 }
-
-
-

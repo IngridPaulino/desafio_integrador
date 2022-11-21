@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Setter
+//@Setter
 @Getter
 @Builder
 public class BatchDueDateStockDTO {

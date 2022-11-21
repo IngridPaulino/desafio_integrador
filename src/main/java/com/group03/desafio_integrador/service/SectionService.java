@@ -15,10 +15,11 @@ public class SectionService implements ISectionService {
     private final SectionRepository repository;
 
     /**
-     * Método responsável por retornar a sessão de acordo com o Id informado.
+     * Método responsável por retornar a sessão conforme Id informado.
      * @author Gabriel Morais
      * @param id - Long
-     * @return Section - Retorna uma entidade do tipo Section.
+     * @throws NotFoundException - NotFoundException
+     * @return Retorna uma entidade do tipo Section.
      */
     @Override
     public Section getById(Long id) {
@@ -29,7 +30,8 @@ public class SectionService implements ISectionService {
      * Método responsável por retornar a categoria da sessão.
      * @author Gabriel Morais
      * @param category - CategoryEnum
-     * @return Section - Retorna uma entidade do tipo Section.
+     * @throws NotFoundException - NotFoundException
+     * @return Retorna uma entidade do tipo Section conforme categoria informada.
      */
     @Override
     public Section findByCategory(CategoryEnum category) {
@@ -45,7 +47,7 @@ public class SectionService implements ISectionService {
      * Método responsável por salvar nova sessão.
      * @author Gabriel Morais
      * @param section - Section
-     * @return Section - Retorna uma entidade do tipo Section.
+     * @return Retorna uma entidade do tipo Section.
      */
     @Override
     public Section save(Section section) {

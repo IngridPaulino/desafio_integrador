@@ -130,7 +130,6 @@ class BatchServiceTest {
         assertThat(batchDueDateStockDTO).isInstanceOf(BatchDueDateStockDTO.class);
     }
 
-//    TODO: Finalizar teste Mariana
     @Test
     void getAllDueDateCategory_returnBatchDueDateStockDTO_whenDataIsNotEmpty() {
         BDDMockito.when(batchRepository.findAllByExpirationDateGreaterThan(ArgumentMatchers.any(LocalDate.class)))

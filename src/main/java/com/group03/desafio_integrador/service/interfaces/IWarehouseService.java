@@ -10,15 +10,14 @@ import java.util.List;
 public interface IWarehouseService {
 
     /**
-     * Método responsável por retornar o armazem de acordo com o Id informado.
+     * Método responsável por retornar o armazém conforme Id informado.
      * @author Gabriel Morais
      * @param id - Long
-     * @return Warehouse - Retorna uma entidade do tipo Warehouse.
-     * @throws NotFoundException
+     * @return Retorna uma entidade do tipo Warehouse.
+     * @throws NotFoundException - NotFoundException
      */
     Warehouse getById(Long id) throws NotFoundException;
 
-    // TODO: 16/11/22 ver quem criou este método
     /**
      * Método responsável por retornar a lista de todos os armazéns cadastrados.
      * @author grupo3

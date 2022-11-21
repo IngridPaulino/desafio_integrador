@@ -92,7 +92,7 @@ public class ProductAdvertisingService implements IProductAdvertisingService {
         for (ProductDTO product : purchase.getProducts()) {
             ProductAdvertising productAdvertising = getById(product.getProductId());
             productAdvertising.setQuantity(product.getQuantity());
-            products.add(getById(product.getProductId())); //TODO: 15/11/2022 verificar o uso da variavel productAdvertising
+            products.add(getById(product.getProductId()));
             BigDecimal productPrice = productAdvertising.getProductPrice().multiply(new BigDecimal(product.getQuantity()));
             totalPrice = totalPrice.add(productPrice);
         }
@@ -104,8 +104,6 @@ public class ProductAdvertisingService implements IProductAdvertisingService {
                 .totalPrice(Double.valueOf(String.valueOf(totalPrice)))
                 .build();
     }
-
-
 
     /**
      * Método responsável por estruturar o Builder para retorno do ShoppingCart.
@@ -150,7 +148,7 @@ public class ProductAdvertisingService implements IProductAdvertisingService {
      * @param purchase - PurchaseOrderDTO
      * @author Gabriel Morais, Mariana Saraiva
      */
-    // TODO: 14/11/22 Analisar Refatoração
+
     protected void verifyStock(PurchaseOrderDTO purchase) {
         List<ValidationErrorDetail> errorDetails = new ArrayList<>();
 

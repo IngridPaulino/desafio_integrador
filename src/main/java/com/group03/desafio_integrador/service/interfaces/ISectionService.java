@@ -9,7 +9,7 @@ public interface ISectionService {
      * Método responsável por retornar a sessão de acordo com o Id informado.
      * @author Gabriel Morais
      * @param id - Long
-     * @return Section - Retorna uma entidade do tipo Section.
+     * @return Retorna uma entidade do tipo Section.
      */
     Section getById(Long id);
 
@@ -17,7 +17,7 @@ public interface ISectionService {
      * Método responsável por retornar a categoria da sessão.
      * @author Gabriel Morais
      * @param category - CategoryEnum
-     * @return Section - Retorna uma entidade do tipo Section.
+     * @return Retorna uma entidade do tipo Section.
      */
     Section findByCategory(CategoryEnum category);
 
@@ -25,7 +25,7 @@ public interface ISectionService {
      * Método responsável por salvar nova sessão.
      * @author Gabriel Morais
      * @param section - Section
-     * @return Section - Retorna uma entidade do tipo Section.
+     * @return Retorna uma entidade do tipo Section.
      */
     Section save(Section section);
 }

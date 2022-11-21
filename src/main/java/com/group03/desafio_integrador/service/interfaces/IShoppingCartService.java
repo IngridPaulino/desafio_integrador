@@ -8,7 +8,7 @@ public interface IShoppingCartService {
      * Método responsável por salvar um novo shoppingCart.
      * @author Amanda Zotelli
      * @param shoppingCart - ShoppingCart
-     * @return ShoppingCart - Retorna uma entidade do tipo shoppingCart.
+     * @return Retorna uma entidade do tipo shoppingCart.
      */
     ShoppingCart save(ShoppingCart shoppingCart);
 
@@ -16,7 +16,7 @@ public interface IShoppingCartService {
      * Método responsável por atualizar um shoppingCart com o order status de finalizado.
      * @author Amanda Zotelli
      * @param id - Long
-     * @return ShoppingCart - Retorna uma entidade do tipo shoppingCart.
+     * @return Retorna uma entidade do tipo shoppingCart.
      */
     ShoppingCart update(Long id);
 }

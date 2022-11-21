@@ -7,13 +7,13 @@ import lombok.*;
 import java.util.List;
 
 /**
- * Entidade responsável por representar um lote no armazem.
+ * Entidade responsável por representar um lote no armazém.
  * @author Gabriel de Morais
  */
 
 @Getter
-@Setter
-@NoArgsConstructor
+//@Setter
+//@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class BatchStockDTO {
