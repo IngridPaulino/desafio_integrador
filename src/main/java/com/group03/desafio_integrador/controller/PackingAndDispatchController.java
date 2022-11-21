@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
-@RequestMapping("/api/v1/orders")
+@RequestMapping("/api/v1/ordersByDispach")
 public class PackingAndDispatchController {
     @Autowired
     public PackingAndDispatchService packingAndDispatchService;

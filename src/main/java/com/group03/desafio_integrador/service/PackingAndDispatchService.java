@@ -23,6 +23,12 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     @Autowired
     private DispatchRepository dispatchRepository;
 
+    @Autowired
+    private ShoppingCartRepository shoppingCartRepository;
+
+    @Autowired
+    private BuyerRepository buyerRepository;
+
     @Override
     public List<CartProduct> findAllCartProduct() {
         return cartProductRepository.findAll();
@@ -39,14 +45,23 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         List<CartProduct> cartBuyerOfProducts = cartProductRepository.findAll();
 
         return cartBuyerOfProducts.stream().map(cartProduct -> {
+            //Buyer buyer = Buyer.builder()
+                   // .buyerId(cartProduct.getShoppingCart().getBuyer().getBuyerId())
+                   // .buyerName(cartProduct.getShoppingCart().getBuyer().getBuyerName())
+                   // .email(cartProduct.getShoppingCart().getBuyer().getEmail())
+                   // .address(cartProduct.getShoppingCart().getBuyer().getAddress())
+                  //  .build();
             if (cartProduct.getShoppingCart().getOrderStatus().equals(OrderStatusEnum.FINALIZADO)) {
                 PackingOrderDTO packing = PackingOrderDTO.builder()
                         .cart_product_id(cartProduct.getCartProductId())
                         .product_id(cartProduct.getCartProductId())
-                        .seller(cartProduct.getProductAdvertising().getSeller().getSellerId())
+                        //.seller(cartProduct.getProductAdvertising().getSeller().getSellerId())
                         .buyer_id(cartProduct.getShoppingCart().getBuyer().getBuyerId())
+                        //.email_buyer(cartProduct.getShoppingCart().getBuyer().getEmail())
+                        //.address(cartProduct.getShoppingCart().getBuyer().getAddress())
                         .category(cartProduct.getProductAdvertising().getCategory())
                         .order_status(String.valueOf(cartProduct.getShoppingCart().getOrderStatus()))
+                        .shopping_cart(cartProduct.getShoppingCart())
                         .build();
 
                 packingOrderFinishidDTOS.add(packing);
@@ -58,7 +73,10 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     @Override
     public void deleteAllCartProductFinished() {
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
+        //PackingOrderDTO packing = cartProductOrderFinished.get(0);
         cartProductOrderFinished.forEach(cartProduct -> cartProductRepository.deleteById(cartProduct.getCart_product_id()));
+        //cartProductOrderFinished.forEach(cartProduct -> shoppingCartRepository.deleteById(packing.getShopping_cart().getShoppingCartId()));
+        // cartProductOrderFinished.forEach(cartProduct -> cartProductRepository.deleteById(cartProduct.getShopping_cart().getShoppingCartId()));
     }
 
     /**
@@ -72,14 +90,15 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
         cartProductOrderFinished.forEach(packing -> {
             DispatchPacking savePackingInBanco = DispatchPacking.builder()
+                    .product_id(packing.getProduct_id())
                     .buyer_id(packing.getBuyer_id())
                     .category(packing.getCategory())
-                    .status(DispatchStatusEnum.ABERTO)
                     .build();
-            packingRepository.save(savePackingInBanco);
+
             dispatchPackings.add(savePackingInBanco);
-            deleteAllCartProductFinished();
+            packingRepository.save(savePackingInBanco);
         });
+        deleteAllCartProductFinished();
         return dispatchPackings;
     }
 
@@ -98,17 +117,19 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     public List<Dispatch> packagedProductsFromSameBuyerAndCategory() {
         List<Dispatch> a = new ArrayList<>();
         List<PackingOrder> dispatch = packingRepository.packingByDispatch();
+
         for(PackingOrder element : dispatch) {
+            Buyer buyer = buyerRepository.findById(element.getBuyer_id()).orElseThrow(() -> new NotFoundException("not found id") );
             Dispatch savePacking = Dispatch.builder()
-                    .buyer_id(element.getBuyer_id())
+                    .buyer_id(buyer)
                     .category(element.getCategory())
-                    .status(DispatchStatusEnum.ABERTO)
+                    .status(DispatchStatusEnum.ENVIADO)
                     .build();
 
-            dispatchRepository.save(savePacking);
             a.add(savePacking);
-            deleteAllCartProductEmbalados();
+            dispatchRepository.save(savePacking);
         }
+        deleteAllCartProductEmbalados();
         return a;
     }
 
@@ -135,7 +156,8 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         packingExist.ifPresent(dispatch -> dispatch.setStatus(DispatchStatusEnum.ENTREGUE));
 
         if(packingExist.get().getStatus() == DispatchStatusEnum.ENTREGUE) {
-         JavaMailApp.sendMail(packingExist.get().getBuyer_id());
+         JavaMailApp.sendMail(packingExist.get().getBuyer_id().getBuyerName(),
+                 packingExist.get().getBuyer_id().getEmail(), packingExist.get().getBuyer_id().getAddress());
         }
         return dispatchRepository.save(packingExist.get());
     }
@@ -150,9 +172,10 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
 
         getAllPackingForDispatch.forEach(obj -> {
             if(obj.getStatus() == DispatchStatusEnum.ENTREGUE) {
-                dispatchRepository.deleteById(obj.getId_Packing());
+                dispatchRepository.deleteById(obj.getId_dispatch());
+            } else {
+                sum.updateAndGet(v -> v + 1);
             }
-            sum.updateAndGet(v -> v + 1);
         });
 
         return sum;
