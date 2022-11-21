@@ -22,12 +22,6 @@ public class DispatchPacking {
     @NotNull
     private Long product_id;
 
-    //@NotNull
-    //@OneToOne
-    //@JoinColumn(name = "buyer_id")
-    //@JsonIgnore
-    //private Long buyer_id;
-
     @NotNull
     private Long buyer_id;
 

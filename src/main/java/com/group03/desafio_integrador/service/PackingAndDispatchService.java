@@ -22,20 +22,21 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     private DispatchPackingRepository packingRepository;
     @Autowired
     private DispatchRepository dispatchRepository;
-
-    @Autowired
-    private ShoppingCartRepository shoppingCartRepository;
-
     @Autowired
     private BuyerRepository buyerRepository;
 
+    /**
+     * Método responsável por retornar todos os carrinhos de compra.
+     * @return Retorna uma lista do tipo CartProduct
+     * @author Ingrid Paulino
+     */
     @Override
     public List<CartProduct> findAllCartProduct() {
         return cartProductRepository.findAll();
     }
 
     /**
-     * Método responsável por retornar todas as compras com status de finalizado
+     * Método responsável por retornar os carrinhos de compra com status de finalizado - coleta
      * @return Retorna uma lista do tipo PackingOrderDTO
      * @author Ingrid Paulino
      */
@@ -45,20 +46,11 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         List<CartProduct> cartBuyerOfProducts = cartProductRepository.findAll();
 
         return cartBuyerOfProducts.stream().map(cartProduct -> {
-            //Buyer buyer = Buyer.builder()
-                   // .buyerId(cartProduct.getShoppingCart().getBuyer().getBuyerId())
-                   // .buyerName(cartProduct.getShoppingCart().getBuyer().getBuyerName())
-                   // .email(cartProduct.getShoppingCart().getBuyer().getEmail())
-                   // .address(cartProduct.getShoppingCart().getBuyer().getAddress())
-                  //  .build();
             if (cartProduct.getShoppingCart().getOrderStatus().equals(OrderStatusEnum.FINALIZADO)) {
                 PackingOrderDTO packing = PackingOrderDTO.builder()
                         .cart_product_id(cartProduct.getCartProductId())
                         .product_id(cartProduct.getCartProductId())
-                        //.seller(cartProduct.getProductAdvertising().getSeller().getSellerId())
                         .buyer_id(cartProduct.getShoppingCart().getBuyer().getBuyerId())
-                        //.email_buyer(cartProduct.getShoppingCart().getBuyer().getEmail())
-                        //.address(cartProduct.getShoppingCart().getBuyer().getAddress())
                         .category(cartProduct.getProductAdvertising().getCategory())
                         .order_status(String.valueOf(cartProduct.getShoppingCart().getOrderStatus()))
                         .shopping_cart(cartProduct.getShoppingCart())
@@ -70,23 +62,22 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
         }).collect(Collectors.toList()).get(0);
     }
 
+    /**
+     * Método responsável por deletar os carrinhos de compra que foram salvos/registrados na tabela de embalagem
+     * @author Ingrid Paulino
+     */
     @Override
     public void deleteAllCartProductFinished() {
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
-        //PackingOrderDTO packing = cartProductOrderFinished.get(0);
         cartProductOrderFinished.forEach(cartProduct -> cartProductRepository.deleteById(cartProduct.getCart_product_id()));
-        //cartProductOrderFinished.forEach(cartProduct -> shoppingCartRepository.deleteById(packing.getShopping_cart().getShoppingCartId()));
-        // cartProductOrderFinished.forEach(cartProduct -> cartProductRepository.deleteById(cartProduct.getShopping_cart().getShoppingCartId()));
     }
 
     /**
      * Método responsável por salvar todas as compras finalizadas na tabela de embalagem
-     * @return Não tem retorno
      * @author Ingrid Paulino
      */
     @Override
-    public List<DispatchPacking> saveFinishedPurchases() {
-        List<DispatchPacking> dispatchPackings = new ArrayList<>();
+    public void saveFinishedPurchases() {
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
         cartProductOrderFinished.forEach(packing -> {
             DispatchPacking savePackingInBanco = DispatchPacking.builder()
@@ -95,13 +86,15 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
                     .category(packing.getCategory())
                     .build();
 
-            dispatchPackings.add(savePackingInBanco);
             packingRepository.save(savePackingInBanco);
         });
         deleteAllCartProductFinished();
-        return dispatchPackings;
     }
 
+    /**
+     * Método responsável por deletar os carrinhos registrados na tabela de embalagem.
+     * @author Ingrid Paulino
+     */
     @Override
     public void deleteAllCartProductEmbalados() {
         List<DispatchPacking> dispatchPackings = packingRepository.findAll();
@@ -109,28 +102,24 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     }
 
     /**
-     * Método responsável por empacotar os produtos do mesmo comprador e categoria. E salvar esses dados na tabela de despacho
-     * @return Não tem retorno
+     * Método responsável por empacotar na mesma embalagem os produtos com categoria e comprador iguais e salvar esses dados na tabela de despacho
      * @author Ingrid Paulino
      */
     @Override
-    public List<Dispatch> packagedProductsFromSameBuyerAndCategory() {
-        List<Dispatch> a = new ArrayList<>();
+    public void packagedProductsFromSameBuyerAndCategory() {
         List<PackingOrder> dispatch = packingRepository.packingByDispatch();
 
         for(PackingOrder element : dispatch) {
             Buyer buyer = buyerRepository.findById(element.getBuyer_id()).orElseThrow(() -> new NotFoundException("not found id") );
             Dispatch savePacking = Dispatch.builder()
-                    .buyer_id(buyer)
+                    .buyer(buyer)
                     .category(element.getCategory())
                     .status(DispatchStatusEnum.ENVIADO)
                     .build();
 
-            a.add(savePacking);
             dispatchRepository.save(savePacking);
         }
         deleteAllCartProductEmbalados();
-        return a;
     }
 
     /**
@@ -144,26 +133,30 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
     }
 
     /**
-     * Método responsável por atualizar status de entrega e mandar notificação da entrega para o comprador e vendedor
-     * @param id
-     * @return Retorna o objeto do pacote entregue
+     * Método responsável por atualizar status da entrega para entregue e encaminhar um email avisando para o comprador que o produto foi entrgue.
+     * @author Ingrid Paulino
+     * @param id -Long
+     * @return Retorna uma entidade do tipo Dispatch ou uma string caso o pacote não sejá encontrado
+     * @throws NotFoundException - NotFoundException
      */
     @Override
     public Dispatch updateStatusDispatch(Long id) throws NotFoundException {
         Optional<Dispatch> packingExist = Optional.ofNullable(dispatchRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Id not found! ")));
+                .orElseThrow(() -> new NotFoundException("Produto não encontrado! ")));
 
         packingExist.ifPresent(dispatch -> dispatch.setStatus(DispatchStatusEnum.ENTREGUE));
 
         if(packingExist.get().getStatus() == DispatchStatusEnum.ENTREGUE) {
-         JavaMailApp.sendMail(packingExist.get().getBuyer_id().getBuyerName(),
-                 packingExist.get().getBuyer_id().getEmail(), packingExist.get().getBuyer_id().getAddress());
+         JavaMailApp.sendMail(packingExist.get().getBuyer().getBuyerName(),
+                 packingExist.get().getBuyer().getEmail(), packingExist.get().getBuyer().getAddress());
         }
         return dispatchRepository.save(packingExist.get());
     }
 
     /**
-     * @return
+     * Rota responsável por deletar as entregas com status de entrgue.
+     * @author Ingrid Paulino
+     * @return Retorna uma string.
      */
     @Override
     public AtomicReference<Integer> deleteAllPackingsEntregue() {

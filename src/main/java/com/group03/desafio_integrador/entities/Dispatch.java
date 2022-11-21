@@ -21,10 +21,7 @@ public class Dispatch {
     @NotNull
     @OneToOne
     @JoinColumn(name = "buyer_id")
-    private Buyer buyer_id;
-
-    //@NotNull
-    //private Long buyer_id;
+    private Buyer buyer;
 
     @NotNull
     private CategoryEnum category;

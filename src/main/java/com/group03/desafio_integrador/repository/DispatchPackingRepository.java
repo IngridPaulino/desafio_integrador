@@ -16,13 +16,8 @@ public interface DispatchPackingRepository extends JpaRepository<DispatchPacking
      * @author Ingrid PaulinoProductAdvertising
      * @return Retorna uma Lista de packing Order.
      */
-    //@Query(value = "SELECT d.buyer_id, d.category FROM dispatch_packing d GROUP By d.buyer_id, d.category", nativeQuery = true)
-    //List<PackingOrder> packingByDispatch();
     @Query(value = "SELECT d.buyer_id, d.category FROM dispatch_packing d GROUP By d.buyer_id, d.category", nativeQuery = true)
     List<PackingOrder> packingByDispatch();
-
-    //@Query(value = "SELECT d FROM DispatchPacking d GROUP By d.buyer, d.category")
-    //List<DispatchPacking> packingByDispatch();
 
     /**
      * Método responsável por listar os lotes de produto conforme o  buyer_id e category do Produto

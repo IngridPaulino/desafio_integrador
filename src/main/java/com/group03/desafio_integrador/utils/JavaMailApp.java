@@ -38,7 +38,7 @@ public class JavaMailApp
                     protected PasswordAuthentication getPasswordAuthentication()
                     {
                         // TODO: 19/11/22 Configurar variaveis de ambiente
-                        return new PasswordAuthentication("xxxxxxx@gmail.com", "xxxxxxxxx");
+                        return new PasswordAuthentication("ingridpaulino1012@gmail.com", "xneaaucfdygkuzei");
                     }
                 });
 
@@ -47,7 +47,7 @@ public class JavaMailApp
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("xxxxxxxxxx@gmail.com")); //Remetente
+            message.setFrom(new InternetAddress("ingridpaulino1012@gmail.com")); //Remetente
 
             Address[] toUser = InternetAddress
                     .parse(emailCliente); //Destinatário(s)
