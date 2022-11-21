@@ -200,7 +200,8 @@ public class TestsMocks {
         return new Buyer(
                 1L,
                 "Buyer 1",
-                "buyer@email.com"
+                "buyer@email.com",
+                "rua jose"
         );
     }
 
@@ -260,13 +261,4 @@ public class TestsMocks {
                 10.0
         );
     }
-
-    public static Buyer buyer() {
-        return new Buyer(
-                1L,
-                "Lucas",
-                "lucas@email.com"
-        );
-    }
-
 }
