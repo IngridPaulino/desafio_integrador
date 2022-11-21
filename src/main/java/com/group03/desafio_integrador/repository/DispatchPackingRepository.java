@@ -28,5 +28,4 @@ public interface DispatchPackingRepository extends JpaRepository<DispatchPacking
      */
     @Query(value = "SELECT * FROM fresh.dispatch_packing WHERE buyer_id=? AND category=?;", nativeQuery = true)
     List<DispatchPacking> findByCategoryAndBuyer(Long buyerId, CategoryEnum category);
-
 }
