@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Entity
 @Builder
 public class CartProduct {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartProductId;

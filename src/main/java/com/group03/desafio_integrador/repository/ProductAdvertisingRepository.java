@@ -17,4 +17,7 @@ public interface ProductAdvertisingRepository extends JpaRepository<ProductAdver
      * @author Mariana Saraiva
      */
     List<ProductAdvertising> findAllByCategory(CategoryEnum categoryEnum);
+
+    interface IDispatchPackingService {
+    }
 }
