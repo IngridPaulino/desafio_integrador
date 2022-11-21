@@ -56,7 +56,6 @@ public class MocksReq6Ingrid {
                 DispatchStatusEnum.ABERTO
         );
         dispatches.add(dispatch);
-
         return dispatches;
     }
 }
