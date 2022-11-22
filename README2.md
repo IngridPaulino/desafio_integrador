@@ -38,7 +38,7 @@ As ferramentas escolhidas para documentar a API foi o Postman, Swagger, Document
 
 ⚠️ Rode o projeto e acesse a documentação do Swagger pela [rota](http://localhost:8080/swagger-ui.html)
 
-⚠️ Acesse a documentação em PDF [aqui](https://drive.google.com/drive/u/0/my-drive) 
+⚠️ Acesse a documentação em PDF [aqui](https://docs.google.com/document/d/1wAN8yz6ej7y4lw-9NyllMlvpCCwiWQVj/edit?usp=sharing&ouid=102771724010636242612&rtpof=true&sd=true) 
 
 ## Diagrama de Entidade-Relacionamento (DER)
 
