@@ -4,6 +4,7 @@ import com.group03.desafio_integrador.advisor.exceptions.NotFoundException;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
 import com.group03.desafio_integrador.entities.CartProduct;
 import com.group03.desafio_integrador.entities.Dispatch;
+import com.group03.desafio_integrador.entities.DispatchPacking;
 import com.group03.desafio_integrador.service.PackingAndDispatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,23 +43,21 @@ public class PackingAndDispatchController {
     /**
      * Rota responsável por salvar os produtos com status de finalizados na tabela de montagem/embalagem/embalagens que precisam ser montados.
      * @author Ingrid Paulino
-     * @return Retorna uma string
+     * @return Retorna uma lista de DispatchPacking
      */
     @PostMapping("/save-finished-purchases")
-    public ResponseEntity<String> saveFinishedPurchases() {
-        packingAndDispatchService.saveFinishedPurchases();
-        return new ResponseEntity<>("Salvo produtos que devem ser embalados.", HttpStatus.CREATED);
+    public ResponseEntity<List<DispatchPacking>> saveFinishedPurchases() {
+        return new ResponseEntity<>(packingAndDispatchService.saveFinishedPurchases(), HttpStatus.CREATED);
     }
 
     /**
      * Rota responsável por empacotar na mesma embalagem os produtos com categoria e comprador iguais.
      * @author Ingrid Paulino
-     * @return Retorna uma string.
+     * @return Retorna uma lista de Dispatch
      */
     @PostMapping("/pack-products") //Embala pacotes/produtos
-    public ResponseEntity<String> packProducts() {
-        packingAndDispatchService.packagedProductsFromSameBuyerAndCategory();
-        return new ResponseEntity<>("Produtos empacotados e prontos para o despacho!", HttpStatus.CREATED);
+    public ResponseEntity<List<Dispatch>> packProducts() {
+        return new ResponseEntity<>(packingAndDispatchService.packagedProductsFromSameBuyerAndCategory(), HttpStatus.CREATED);
     }
 
     /**

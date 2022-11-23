@@ -4,6 +4,7 @@ import com.group03.desafio_integrador.advisor.exceptions.NotFoundException;
 import com.group03.desafio_integrador.dto.PackingOrderDTO;
 import com.group03.desafio_integrador.entities.CartProduct;
 import com.group03.desafio_integrador.entities.Dispatch;
+import com.group03.desafio_integrador.entities.DispatchPacking;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -25,27 +26,33 @@ public interface IPackingAndDispatchService {
 
     /**
      * Método responsável por deletar os carrinhos de compra que foram salvos/registrados na tabela de embalagem
+     *
+     * @return
      * @author Ingrid Paulino
      */
-    //void deleteAllCartProductFinished();
+    Object deleteAllCartProductFinished();
 
     /**
      * Método responsável por salvar todas as compras finalizadas na tabela de embalagem
+     * @return Retorna uma entidade do tipo DispatchPacking
      * @author Ingrid Paulino
      */
-    void saveFinishedPurchases();
+    List<DispatchPacking> saveFinishedPurchases();
 
     /**
      * Método responsável por deletar os carrinhos registrados na tabela de embalagem.
+     *
+     * @return
      * @author Ingrid Paulino
      */
-    //void deleteAllCartProductEmbalados();
+    Object deleteAllCartProductEmbalados();
 
     /**
      * Método responsável por empacotar na mesma embalagem os produtos com categoria e comprador iguais e salvar esses dados na tabela de despacho
+     * @return Retorna uma lista de Dispatch
      * @author Ingrid Paulino
      */
-    void packagedProductsFromSameBuyerAndCategory();
+    List<Dispatch> packagedProductsFromSameBuyerAndCategory();
 
     /**
      * Método responsável por retornar todos os pacotes que estão prontos para entrega

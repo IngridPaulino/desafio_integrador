@@ -73,8 +73,7 @@ class PackingAndDispatchControllerTestIT {
         ResultActions response = mockMvc.perform(post("/api/v1/ordersByDispach/save-finished-purchases")
                 .contentType(MediaType.APPLICATION_JSON));
 
-        response.andExpect(status().isCreated())
-                .andExpect(content().string("Salvo produtos que devem ser embalados."));
+        response.andExpect(status().isCreated());
     }
 
     @Test
@@ -82,8 +81,8 @@ class PackingAndDispatchControllerTestIT {
         ResultActions response = mockMvc.perform(post("/api/v1/ordersByDispach/pack-products")
                 .contentType(MediaType.APPLICATION_JSON));
 
-        response.andExpect(status().isCreated())
-                .andExpect(content().string("Produtos empacotados e prontos para o despacho!"));
+        response.andExpect(status().isCreated());
+                //.andExpect(content().string("Produtos empacotados e prontos para o despacho!"));
     }
 
     @Test
@@ -92,12 +91,13 @@ class PackingAndDispatchControllerTestIT {
                 get("/api/v1/ordersByDispach/dispatched-packages")
                         .contentType(MediaType.APPLICATION_JSON));
 
+
         response.andExpect(status().isOk());
     }
 
     @Test
     void update() throws Exception {
-        ResultActions response = mockMvc.perform(post("/api/v1/ordersByDispach/dispatch/11")
+        ResultActions response = mockMvc.perform(patch("/api/v1/ordersByDispach/dispatch/{id}", '6')
                 .contentType(MediaType.APPLICATION_JSON));
 
         response.andExpect(status().isOk());

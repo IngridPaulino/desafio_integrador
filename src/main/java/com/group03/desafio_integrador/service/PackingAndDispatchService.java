@@ -64,20 +64,25 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
 
     /**
      * Método responsável por deletar os carrinhos de compra que foram salvos/registrados na tabela de embalagem
+     *
+     * @return
      * @author Ingrid Paulino
      */
     //@Override
-    private void deleteAllCartProductFinished() {
+    public Object deleteAllCartProductFinished() {
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
         cartProductOrderFinished.forEach(cartProduct -> cartProductRepository.deleteById(cartProduct.getCart_product_id()));
-    }
+        return null;
+    } //
 
     /**
      * Método responsável por salvar todas as compras finalizadas na tabela de embalagem
+     * @return Retorna uma entidade do tipo DispatchPacking.
      * @author Ingrid Paulino
      */
     @Override
-    public void saveFinishedPurchases() {
+    public List<DispatchPacking> saveFinishedPurchases() {
+        List<DispatchPacking> dispatchPackingList = new ArrayList<>();
         List<PackingOrderDTO> cartProductOrderFinished = getAllFinishedPurchases();
         cartProductOrderFinished.forEach(packing -> {
             DispatchPacking savePackingInBanco = DispatchPacking.builder()
@@ -87,26 +92,33 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
                     .build();
 
             packingRepository.save(savePackingInBanco);
+            dispatchPackingList.add(savePackingInBanco);
         });
         deleteAllCartProductFinished();
+        return dispatchPackingList;
     }
 
     /**
      * Método responsável por deletar os carrinhos registrados na tabela de embalagem.
+     *
+     * @return
      * @author Ingrid Paulino
      */
-    //@Override
-    private void deleteAllCartProductEmbalados() {
+    @Override
+    public Object deleteAllCartProductEmbalados() {
         List<DispatchPacking> dispatchPackings = packingRepository.findAll();
         dispatchPackings.forEach(packaged -> packingRepository.deleteById(packaged.getId_Packing()));
+        return null;
     }
 
     /**
      * Método responsável por empacotar na mesma embalagem os produtos com categoria e comprador iguais e salvar esses dados na tabela de despacho
+     * @return Retorna uma entidade do tipo Dispatch.
      * @author Ingrid Paulino
      */
     @Override
-    public void packagedProductsFromSameBuyerAndCategory() {
+    public List<Dispatch> packagedProductsFromSameBuyerAndCategory() {
+        List<Dispatch> dispatches = new ArrayList<>();
         List<PackingOrder> dispatch = packingRepository.packingByDispatch();
 
         for(PackingOrder element : dispatch) {
@@ -118,8 +130,10 @@ public class PackingAndDispatchService implements IPackingAndDispatchService {
                     .build();
 
             dispatchRepository.save(savePacking);
+            dispatches.add(savePacking);
         }
         deleteAllCartProductEmbalados();
+        return dispatches;
     }
 
     /**

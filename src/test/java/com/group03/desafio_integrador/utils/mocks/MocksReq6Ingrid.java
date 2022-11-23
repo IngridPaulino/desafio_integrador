@@ -1,5 +1,7 @@
 package com.group03.desafio_integrador.utils.mocks;
 
+import com.group03.desafio_integrador.dto.PackingOrder;
+import com.group03.desafio_integrador.dto.PackingOrderDTO;
 import com.group03.desafio_integrador.entities.*;
 import com.group03.desafio_integrador.entities.entities_enum.CategoryEnum;
 import com.group03.desafio_integrador.entities.entities_enum.DispatchStatusEnum;
@@ -58,4 +60,57 @@ public class MocksReq6Ingrid {
         dispatches.add(dispatch);
         return dispatches;
     }
+
+    public static List<DispatchPacking> mockDispatchPacking() {
+        List<DispatchPacking> dispatchPackingList = new ArrayList<>();
+        DispatchPacking dispatchPacking = DispatchPacking.builder()
+                .id_Packing(1L)
+                .product_id(4L)
+                .buyer_id(1L)
+                .category(CategoryEnum.FS)
+                .build();
+
+        dispatchPackingList.add(dispatchPacking);
+        return dispatchPackingList;
+    }
+
+    public static Dispatch mockDispatchPacking2() {
+
+        return Dispatch.builder()
+                .id_dispatch(1L)
+                .buyer(Buyer.builder()
+                        .buyerId(1L)
+                        .buyerName("Ingrid")
+                        .email("xxxxxx@gmail.com")
+                        .address("Rua X")
+                        .build())
+                .category(CategoryEnum.FS)
+                .status(DispatchStatusEnum.ENVIADO)
+                .build();
+    }
+
+    ////public static List<PackingOrder> mockDispatchPackingOrder() {
+       // List<PackingOrder> packingOrderList = new ArrayList<>();
+
+       // PackingOrder packingOrder = (PackingOrder) PackingOrderDTO.builder()
+        //        .buyer_id(1L)
+         //       .category(CategoryEnum.FS)
+           //     .build();
+
+        //packingOrderList.add(packingOrder);
+       // return packingOrderList;
+   // }
+
+    public static Buyer mockBuyer() {
+        return Buyer.builder()
+                .buyerId(1L)
+                .buyerName("ingrid")
+                .email("ingridpaulino1012@gmail.com")
+                .address("Rua jose riveiro filho")
+                .build();
+    }
+
+
+
+
 }
